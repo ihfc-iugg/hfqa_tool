@@ -79,8 +79,6 @@ python3 setup.py install
 - The worksheet name of Heat flow data must be named "data list", to execute conversion of the data set in machine readable format (here, *.csv*). Else the function `convert2UTF8csv(folder_path)` will not work.
 ![data_list Image](Graphics/data_list.png)
 - When a new data release occurs and the relevancy (indicated by *'Obligation'*) of a column in the HF data structure is updated, make sure to place the data structure files with the updated column relevancy into separate folders before running the code.
-- Ignore file conversion of *.xlsx* files to a readable format if a *.csv* version already exists.
-- If changes are made to the original Heat Flow database file in *.xlsx* format, delete the previous *.csv* file and generate a new one using the `convert2UTF8csv(folder_path)` function as described in the *Example* section.
 
 # License
 
