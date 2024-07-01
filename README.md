@@ -60,8 +60,18 @@ python3 setup.py install
 # Setting up the development environment:
 
 # Running code
+### Directly
+- Download jupyter notebook or python version of the code. Run on related environment.
 - Run all sections of the code. Descriptions and guidelines are provided with the code.
-- When prompted with `Please enter the file directory:`, provide the directory/location of your Heatflow data files. This can be done in the last section (*Example*) of the code, specifically in section 13.1 of the [Vocabulary_check](https://git-int.gfz-potsdam.de/chishti/heatflow-quality-analysis-code/-/blob/Vocabulary_check/Vocabulary_check.ipynb) code, and section 12.1 of the [Combined_score](https://git-int.gfz-potsdam.de/chishti/heatflow-quality-analysis-code/-/blob/Quality_score/Combined_score.ipynb) code.
+- When prompted with `Please enter the file directory:`, provide the directory/location of your Heatflow data files. This can be done in the last section (*12. hfqa_tool function*) of the code, both in [Vocabulary_check](https://git-int.gfz-potsdam.de/chishti/heatflow-quality-analysis-code/-/blob/Vocabulary_check/Vocabulary_check.ipynb) code, and [Combined_score](https://git-int.gfz-potsdam.de/chishti/heatflow-quality-analysis-code/-/blob/Quality_score/Combined_score.ipynb) code.
+- If running on Linux or Mac OS, use forward slashes /. On Windows, backward slashes \ will work fine when assigning your directory.
+- Get results in the same folder :)
+### Cloning .git
+- Follow steps from [Install from Github](#installation-guide).
+- `conda activate --myenv`, with all [libraries installed](###Python-Dependencies).
+- Run `python` in shell
+- `from hfqa_tool import check_vocabulary, quality_score`
+- When prompted with `Please enter the file directory:`, provide the directory/location of your Heatflow data files. This can be done in the last section (*12. hfqa_tool function*) of the code, both in [Vocabulary_check](https://git-int.gfz-potsdam.de/chishti/heatflow-quality-analysis-code/-/blob/Vocabulary_check/Vocabulary_check.ipynb) code, and [Combined_score](https://git-int.gfz-potsdam.de/chishti/heatflow-quality-analysis-code/-/blob/Quality_score/Combined_score.ipynb) code.
 - If running on Linux or Mac OS, use forward slashes /. On Windows, backward slashes \ will work fine when assigning your directory.
 - Get results in the same folder :)
     
