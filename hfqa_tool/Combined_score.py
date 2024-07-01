@@ -993,5 +993,5 @@ def quality_score():
 # In[ ]:
 
 
-quality_score()
+#quality_score()
 
