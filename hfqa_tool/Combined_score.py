@@ -39,9 +39,14 @@ warnings.filterwarnings("ignore", category=UserWarning, module='openpyxl')
 
 
 def convert2UTF8csv(folder_path):    
+    # Get all .xlsx files in the folder
     excel_files = glob.glob(os.path.join(folder_path, '*.xlsx'))
 
     for excel_file_path in excel_files:
+        # Skip files ending with '_vocab_check.xlsx'
+        if excel_file_path.endswith('_vocab_check.xlsx') or excel_file_path.endswith('_scores_result.xlsx'):
+            continue
+
         try:
             # Specify the engine explicitly
             excel_file = pd.ExcelFile(excel_file_path, engine='openpyxl')
@@ -54,9 +59,6 @@ def convert2UTF8csv(folder_path):
             
             # Save the sheet to a CSV file with UTF-8 encoding
             data_list_sheet.to_csv(output_csv_file, index=False, encoding='utf-8')
-            
-            # Print a success message (optional)
-            #print(f"Conversion complete. CSV file saved as: {output_csv_file}")
             
             # Clean up
             del data_list_sheet
