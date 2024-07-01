@@ -68,7 +68,7 @@ python3 setup.py install
 - Get results in the same folder :)
 ### Cloning .git
 - Follow steps from [Install from Github](#installation-guide).
-- `conda activate --myenv`, with all installed [Python Dependencies](###python-dependencies).
+- `conda activate --myenv`, with all installed [Python Dependencies](#python-dependencies).
 - Run `python` in shell
 - `from hfqa_tool import check_vocabulary, quality_score`
 - When prompted with `Please enter the file directory:`, provide the directory/location of your Heatflow data files.
