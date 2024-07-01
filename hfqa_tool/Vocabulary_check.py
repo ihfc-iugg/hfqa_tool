@@ -587,5 +587,5 @@ def check_vocabulary():
 # In[ ]:
 
 
-#check_vocabulary()
+check_vocabulary()
 
