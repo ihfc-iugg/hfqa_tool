@@ -32,13 +32,16 @@ This package is supported for *Windows*, *macOS* and *Linux*. The package has be
 `hfqa_tool` mainly depends on the Python scientific computing and file handling stack.
 
 ```
-numpy
-pandas
+numpy>=1.18.0
+pandas>=1.0.0
+openpyxl>=3.0.0
 math
 datetime
-openpyxl
 glob
 os
+warnings
+
+* 'glob', 'os', 'warnings' 'datetime', and 'math' are part of the standard library
 ```
 
 # Installation Guide:
