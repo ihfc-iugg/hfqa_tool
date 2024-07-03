@@ -66,7 +66,7 @@ python3 setup.py install
 ### Directly
 - Download jupyter notebook or python version of the code. Run on related environment.
 - Run all sections of the code. Descriptions and guidelines are provided with the code.
-- When prompted with `Please enter the file directory:`, provide the directory/location of your Heatflow data files. This can be done in the last section (*12. hfqa_tool function*) of the code, both in [Vocabulary_check](https://git-int.gfz-potsdam.de/chishti/heatflow-quality-analysis-code/-/blob/Vocabulary_check/Vocabulary_check.ipynb) code, and [Combined_score](https://git-int.gfz-potsdam.de/chishti/heatflow-quality-analysis-code/-/blob/Quality_score/Combined_score.ipynb) code.
+- When prompted with `Please enter the file directory:`, provide the directory/location of your Heatflow data files. This can be done in the last section (*12. hfqa_tool function*) of the code, both in [Vocabulary_check](https://git-int.gfz-potsdam.de/chishti/heatflow-quality-analysis-code/-/blob/Vocabulary_check/Vocabulary_check.ipynb), and [Combined_score](https://git-int.gfz-potsdam.de/chishti/heatflow-quality-analysis-code/-/blob/Quality_score/Combined_score.ipynb) code.
 - If running on Linux or Mac OS, use forward slashes /. On Windows, backward slashes \ will work fine when assigning your directory.
 - Get results in the same folder :)
 ### Cloning .git
