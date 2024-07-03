@@ -58,7 +58,7 @@ pip3 install git+https://github.com/sfchishti/hfqa_tool.git
 ```
 git clone https://github.com/sfchishti/hfqa_tool.git
 cd hfqa_tool
-python3 setup.py install
+python setup.py install --user
 ```
 - `sudo`, if required
 - `python3 setup.py build_ext --inplace  # for cython`, if you want to test in-place, first execute this
