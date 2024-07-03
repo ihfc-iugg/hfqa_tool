@@ -12,7 +12,7 @@
 
 # Overview
 
-`hfqa_tool` is a Python package containing tools for independent testing of Heat Flow data quality and structure, adhering to a controlled vocabulary. This is developed in compliance with the paper by Fuchs et al. (2023) titled "[Quality-assurance of heat-flow data: The new structure and evaluation scheme of the IHFC Global Heat Flow Database](https://doi.org/10.1016/j.tecto.2023.229976)," published in Tectonophysics 863: 229976. Also revised for the newer release 2024.
+**Heat Flow Quality Analysis Toolbox** `hfqa_tool` is a Python package containing tools for independent testing of Heat Flow data quality and structure, adhering to a controlled vocabulary. This is developed in compliance with the paper by Fuchs et al. (2023) titled "[Quality-assurance of heat-flow data: The new structure and evaluation scheme of the IHFC Global Heat Flow Database](https://doi.org/10.1016/j.tecto.2023.229976)," published in Tectonophysics 863: 229976. Also revised for the newer release 2024.
 
 # Documenation
 The official documentation with usage is at: 
