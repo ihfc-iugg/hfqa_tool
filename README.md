@@ -41,7 +41,7 @@ glob
 os
 warnings
 
-# 'glob', 'os', 'warnings' 'datetime', and 'math' are part of the standard library
+# 'glob', 'os', 'warnings', 'datetime', and 'math' are part of the standard library
 ```
 
 # Installation Guide:
