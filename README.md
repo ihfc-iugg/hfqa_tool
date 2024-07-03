@@ -72,7 +72,7 @@ python3 setup.py install
 - If running on Linux or Mac OS, use forward slashes /. On Windows, backward slashes \ will work fine when assigning your directory.
 - Get results in the same folder :)
 ### Cloning .git
-- Follow steps from [Install from Github](#install_from_github).
+- Follow steps from [Install from Github](#install-from_github).
 - `conda activate --myenv` #replace with your own environment name, with all installed [Python Libraries](#python-dependencies).
 - Run `python` in shell
 - `from hfqa_tool import check_vocabulary, quality_score`
@@ -80,7 +80,7 @@ python3 setup.py install
 - If running on Linux or Mac OS, use forward slashes /. On Windows, backward slashes \ will work fine when assigning your directory.
 - Get results in the same folder :)
 ### PyPi
-- In Python terminal run code from [Install from PyPi](#install_from_pypi)
+- In Python terminal run code from [Install from PyPi](#install-from-pypi)
 ```
 import hfqa_tool
 ```
