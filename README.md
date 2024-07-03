@@ -48,7 +48,8 @@ warnings
 
 ### Install from PyPi
 ```
-pip3 install hfqa_tool
+#pip3 install hfqa_tool
+pip3 install git+https://github.com/sfchishti/hfqa_tool.git
 ```
 
 ### Install from Github
