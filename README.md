@@ -17,6 +17,7 @@
 # Documenation
 The official documentation with usage is at: 
 ReadTheDocs: 
+The list of Co-Authors involved in developing this toolbox are mentioned in [COAUTHORS.md](https://github.com/sfchishti/hfqa_tool/blob/main/notebooks/Combined_score.ipynb)
 
 # System Requirements
 ## Hardware requirements
