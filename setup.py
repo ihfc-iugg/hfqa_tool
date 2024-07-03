@@ -25,7 +25,7 @@ setup(
     url="https://git-int.gfz-potsdam.de/chishti/heatflow-quality-analysis-code",
     classifiers=[
         "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: MIT License",  # Use the appropriate license
+        "License :: OSI Approved :: ___ License",  # Use the appropriate license
         "Operating System :: OS Independent",
     ],
     python_requires='>=3.6',
