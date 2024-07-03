@@ -22,7 +22,7 @@ setup(
     ),
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
-    url="https://git-int.gfz-potsdam.de/chishti/heatflow-quality-analysis-code",
+    url="https://github.com/sfchishti/hfqa_tool",
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: ___ License",  # Use the appropriate license
