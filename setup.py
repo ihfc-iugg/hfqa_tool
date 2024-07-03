@@ -8,7 +8,7 @@ setup(
         'numpy>=1.18.0',
         'pandas>=1.0.0',
         'openpyxl>=3.0.0',
-        # 'glob', 'os', 'datetime', and 'math' are part of the standard library
+        # 'glob', 'os', 'datetime', 'warnings' and 'math' are part of the standard library
     ],
     author="Saman Firdaus Chishti",
     author_email="chishti@gfz-potsdam.de, sfc2022july@gmail.com, chishti@uni-potsdam.de",
