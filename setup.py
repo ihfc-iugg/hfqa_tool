@@ -10,7 +10,7 @@ setup(
         'openpyxl>=3.0.0',
         # 'glob', 'os', 'datetime', 'warnings' and 'math' are part of the standard library
     ],
-    author="Saman Firdaus Chishti",
+    author="Saman Firdaus Chishti", # "Sven Fuchs", "Ben Norden", "Florian Neumann", "Elif Balkan-Pazvantoğlu", "Samah Elbarbary"
     author_email="chishti@gfz-potsdam.de, sfc2022july@gmail.com, chishti@uni-potsdam.de",
     description=(
         "`hfqa_tool` is a Python package containing tools for independent testing of "
