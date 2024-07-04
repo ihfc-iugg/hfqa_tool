@@ -18,7 +18,7 @@
 The official documentation with usage is at: 
 ReadTheDocs: 
 
-The list of Co-Authors involved in developing this toolbox are mentioned in [COAUTHORs.md](https://github.com/sfchishti/hfqa_tool/blob/main/COAUTHORs.md)
+The list of Co-Authors involved in developing this toolbox are mentioned in [AUTHORs.md](https://github.com/sfchishti/hfqa_tool/blob/main/AUTHORs.md)
 
 # System Requirements
 ## Hardware requirements
