@@ -356,7 +356,7 @@ def vocabcheck(df,m_dict,domain):
                 for dfvalue in dfvalue:
                     try:
                         r = dfvalue.strip()
-                        if r:
+                        if float(r):
                             r = float(r)
     
                         if  min_value <= r <= max_value:
