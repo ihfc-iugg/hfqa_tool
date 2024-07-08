@@ -17,8 +17,15 @@
 
 # In[1]:
 
-
-get_ipython().run_cell_magic('time', '', 'import pandas as pd\nimport numpy as np\nimport math\nfrom datetime import datetime\nimport openpyxl\nimport warnings\nimport glob\nimport os\n')
+import pandas as pd
+import numpy as np
+import math
+from datetime import datetime
+import openpyxl
+import warnings
+import glob
+import os
+# get_ipython().run_cell_magic('time', '', 'import pandas as pd\nimport numpy as np\nimport math\nfrom datetime import datetime\nimport openpyxl\nimport warnings\nimport glob\nimport os\n')
 
 
 # In[2]:
