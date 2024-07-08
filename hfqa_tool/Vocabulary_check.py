@@ -11,27 +11,19 @@
 # 
 # The code is intended to be published on the GFZ website for the global scientific community to check if any Heatflow dataset adheres to the data structure described in the aforementioned scientific paper. It's a recommended prerequisite before calculating 'Quality Scores' for a given Heatflow dataset. The code for calculating 'Quality Scores' is provided in a separate document.
 
-# ![Vocab Image](Graphics\Vocab.jpg)
+# ![Vocab Image](Graphics//Vocab.jpg)
 
 # # 1. Importing libraries
 
 # In[1]:
 
-import pandas as pd
-import numpy as np
-import math
-from datetime import datetime
-import openpyxl
-import warnings
-import glob
-import os
-#get_ipython().run_cell_magic('time', '', 'import pandas as pd\nimport numpy as np\nimport math\nfrom datetime import datetime\nimport openpyxl\nimport warnings\nimport glob\nimport os\n')
+
+get_ipython().run_cell_magic('time', '', 'import pandas as pd\nimport numpy as np\nimport math\nfrom datetime import datetime\nimport openpyxl\nimport warnings\nimport glob\nimport os\n')
 
 
 # In[2]:
 
 
-# Suppress specific warnings
 warnings.filterwarnings("ignore", category=UserWarning, module='openpyxl')
 
 
@@ -43,29 +35,23 @@ warnings.filterwarnings("ignore", category=UserWarning, module='openpyxl')
 
 # In[3]:
 
+
 def convert2UTF8csv(folder_path):    
-    # Get all .xlsx files in the folder
     excel_files = glob.glob(os.path.join(folder_path, '*.xlsx'))
 
     for excel_file_path in excel_files:
-        # Skip files ending with '_vocab_check.xlsx'
         if excel_file_path.endswith('_vocab_check.xlsx') or excel_file_path.endswith('_scores_result.xlsx'):
             continue
 
         try:
-            # Specify the engine explicitly
             excel_file = pd.ExcelFile(excel_file_path, engine='openpyxl')
             
-            # Parse the 'data list' sheet
             data_list_sheet = excel_file.parse('data list')
             
-            # Generate the output CSV file path
             output_csv_file = os.path.splitext(excel_file_path)[0] + '.csv'
             
-            # Save the sheet to a CSV file with UTF-8 encoding
             data_list_sheet.to_csv(output_csv_file, index=False, encoding='utf-8')
             
-            # Clean up
             del data_list_sheet
             del excel_file
             
@@ -249,7 +235,9 @@ def remove_rows(df):
         return df
 
 
-# # 5. Assigning data types to specific columns
+# # 5. Data type handling
+
+# ## 5.1. Assigning data types to specific columns
 
 #     [Description]: Convert all the columns to string data type. To resolve multiple values in a categorical field for an entry
 
@@ -263,11 +251,55 @@ def change_type(df):
     return df
 
 
+# ## 5.2. Safe float conversion 
+
+# def safe_float_conversion(r):
+#     if r == '0':
+#         return 0.0
+#     try:
+#         return float(r)
+#     except ValueError:
+#         return None
+
+# In[17]:
+
+
+def safe_float_conversion(r):
+    r = r.strip()  # Remove any leading or trailing whitespace
+    
+    if r == '0':
+        return 0.0
+    
+    try:
+        # Check if the first character is a minus sign
+        if r[0] == '-':
+            return -float(r[1:])  # Convert the substring starting from the second character to float and make it negative
+        else:
+            return float(r)  # Convert the whole string to float
+    except ValueError:
+        return None
+
+
+# r='-10'
+
+# if float(r) or r=='0':
+#     p = safe_float_conversion(r)
+# p
+
+# p = safe_float_conversion(r)
+# p
+
+# if  0 <= p <= 19999.9:
+#     error_string = ""
+# else:
+#     error_string = "error"
+# error_string
+
 # # 6. Converting string values to lower case
 
 #     [Description]: To resolve case-sensitivity in the provided Heatflow database
 
-# In[17]:
+# In[18]:
 
 
 def toLower(df):
@@ -283,7 +315,7 @@ def toLower(df):
 
 #     [Description]: Check for mandatory fields indicated by 'Obligation' label in HF database. And store information about the nature of data, whether its borehole or probe sensing.
 
-# In[18]:
+# In[19]:
 
 
 def obligation(df):
@@ -297,7 +329,7 @@ def obligation(df):
 
 # ## 7.2.  Structure relevance for the current release
 
-# In[19]:
+# In[20]:
 
 
 def relevance(folder_path):
@@ -321,7 +353,7 @@ def relevance(folder_path):
 
 #     [Description]: Complete check of vocabulary separately for numeric, string and date type columns
 
-# In[20]:
+# In[21]:
 
 
 def vocabcheck(df,m_dict,domain):
@@ -356,39 +388,39 @@ def vocabcheck(df,m_dict,domain):
                 for dfvalue in dfvalue:
                     try:
                         r = dfvalue.strip()
-                        if float(r):
-                            r = float(r)
+                        if float(r) or r=='0':
+                            r = safe_float_conversion(r)
     
-                        if  min_value <= r <= max_value:
-                            error_string = ""
-                            
-                        elif math.isnan(r):
-                            if (m_dict[c] == 'M') and (df.loc[id, c]) == 'nan':
-                                if ('B' in domain[c] and ((df.loc[id, 'P12']) in B)):
-                                    error_string = f" {c}:Mandatory entry is empty!," #set '[Unspecified]',"
-                                elif ('S' in domain[c] and ((df.loc[id, 'P12']) in P)):
-                                    error_string = f" {c}:Mandatory entry is empty!," #set '[Unspecified]',"
-                                elif ((('B'or'S') in domain[c]) and (df.loc[id, 'P12'] in ['[other (specify in comments)]', '[unspecified]', 'nan'])):
-                                    error_string = f" {c}:Mandatory entry is empty!," #set '[Unspecified]',"
-                                else:
-                                    error_string = ""
-                            elif m_dict[c] == 'M':
-                                if (df.loc[id, 'P12']) in B:
-                                    if (c == 'C5') and (df.loc[id, 'C6'] is None):
-                                        error_string = f" {c}:mandatory field!,"   
+                            if  min_value <= r <= max_value:
+                                error_string = ""
+                                
+                            elif math.isnan(r):
+                                if (m_dict[c] == 'M') and (df.loc[id, c]) == 'nan':
+                                    if ('B' in domain[c] and ((df.loc[id, 'P12']) in B)):
+                                        error_string = f" {c}:Mandatory entry is empty!," #set '[Unspecified]',"
+                                    elif ('S' in domain[c] and ((df.loc[id, 'P12']) in P)):
+                                        error_string = f" {c}:Mandatory entry is empty!," #set '[Unspecified]',"
+                                    elif ((('B'or'S') in domain[c]) and (df.loc[id, 'P12'] in ['[other (specify in comments)]', '[unspecified]', 'nan'])):
+                                        error_string = f" {c}:Mandatory entry is empty!," #set '[Unspecified]',"
                                     else:
                                         error_string = ""
-                                elif (df.loc[id, 'P12']) in P:
-                                    if (c == 'C6') and (df.loc[id, 'C5'] is None):
-                                        error_string = f" {c}:mandatory field!,"
-                                    elif (c == 'C23') and ((df.loc[id, 'C31'] or df.loc[id, 'C32']) is None):
-                                        error_string = f" {c}:mandatory field!,"
-                                    else:
-                                        error_string = ""
+                                elif m_dict[c] == 'M':
+                                    if (df.loc[id, 'P12']) in B:
+                                        if (c == 'C5') and (df.loc[id, 'C6'] is None):
+                                            error_string = f" {c}:mandatory field!,"   
+                                        else:
+                                            error_string = ""
+                                    elif (df.loc[id, 'P12']) in P:
+                                        if (c == 'C6') and (df.loc[id, 'C5'] is None):
+                                            error_string = f" {c}:mandatory field!,"
+                                        elif (c == 'C23') and ((df.loc[id, 'C31'] or df.loc[id, 'C32']) is None):
+                                            error_string = f" {c}:mandatory field!,"
+                                        else:
+                                            error_string = ""
                                 else:
                                     error_string = ""#error_string = f" {c}:P12: Mandatory entry is empty; Quality Check is not possible!,"  
                             else:
-                                error_string = ""                                                                       
+                                error_string = f" {c}:range violated," ###                                                                      
                         else:
                             error_string = f" {c}:range violated,"
                     except ValueError:
@@ -510,7 +542,7 @@ def vocabcheck(df,m_dict,domain):
 
 #     [Description]: Calling previous functions to prepare data and perform vocabulary checking
 
-# In[21]:
+# In[22]:
 
 
 def Complete_check(df):
@@ -523,7 +555,7 @@ def Complete_check(df):
 
 #     [Description]: Attaching the combined results column to the original database with correct indexing.
 
-# In[22]:
+# In[23]:
 
 
 def attachOG(og):
@@ -546,7 +578,7 @@ def attachOG(og):
 
 #     [Description]: To generate results for all the Heatflow database in a folder stored in .csv format 
 
-# In[23]:
+# In[24]:
 
 
 def folder_result(folder_path):
@@ -576,17 +608,19 @@ def folder_result(folder_path):
 
 #      [Desclaimer]: When a new data release occurs and the relevancy (indicated by 'Obligation') of a column in the HF data structure is updated, ensure that you place the data structure files with the updated column relevancy into separate folders before running the code!!
 
-# In[24]:
+# In[25]:
 
 
 def check_vocabulary():
-    folder_path = input("Please enter the file directory for checking vocabulary: ")
+    folder_path = input("Please enter the file directory: ")
     convert2UTF8csv(folder_path)
     folder_result(folder_path)
 
 
+# E:\voc_check\Try
+
 # In[ ]:
 
 
-check_vocabulary()
+get_ipython().run_cell_magic('time', '', 'check_vocabulary()\n')
 
