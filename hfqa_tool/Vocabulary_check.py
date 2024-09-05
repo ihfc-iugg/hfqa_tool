@@ -25,12 +25,15 @@ import openpyxl
 import warnings
 import glob
 import os
-# get_ipython().run_cell_magic('time', '', 'import pandas as pd\nimport numpy as np\nimport math\nfrom datetime import datetime\nimport openpyxl\nimport warnings\nimport glob\nimport os\n')
+import time
+import re
+#get_ipython().run_cell_magic('time', '', 'import pandas as pd\nimport numpy as np\nimport math\nfrom datetime import datetime\nimport openpyxl\nimport warnings\nimport glob\nimport os\n')
 
 
 # In[2]:
 
 
+# Suppress specific warnings
 warnings.filterwarnings("ignore", category=UserWarning, module='openpyxl')
 
 
@@ -137,12 +140,18 @@ tndf
 # In[9]:
 
 
-B = ["[Drilling]","[Drilling-Clustering]","[Mining]","[Tunneling]"]
+number = 0
+
+
+# In[10]:
+
+
+B = ["[Drilling]","[Drilling-Clustering]","[Mining]","[Tunneling]","[GTM]"]
 P = ["[Probing (onshore/lake, river, etc.)]","[Probing (offshore/ocean)]","[Probing-Clustering]"]
-#U = ["[Other (specify in comments)]","[unspecified]"];
+U = ["[Other (specify in comments)]","[unspecified]","nan",""];
 sP7 = ["[Onshore (continental)]","[Onshore (lake, river, etc.)]","[Offshore (continental)]","[Offshore (marine)]","[unspecified])"];
 sP9=sC9 = ["[Yes]","[No]","[Unspecified]"];
-sP12 = ["[Drilling]","[Mining]","[Tunneling]","[Probing (onshore/lake, river, etc.)]","[Probing (offshore/ocean)]","[Drilling-Clustering]","[Probing-Clustering]","[Other (specify in comments)]","[unspecified]"];
+sP12 = ["[Drilling]","[Mining]","[Tunneling]","[GTM]","[Probing (onshore/lake, river, etc.)]","[Probing (offshore/ocean)]","[Drilling-Clustering]","[Probing-Clustering]","[Other (specify in comments)]","[unspecified]"];
 sP13 = ["[Hydrocarbon]","[Underground storage]","[Geothermal]","[Groundwater]","[Mapping]","[Research]","[Mining]","[Tunneling]","[Other (specify in comments)]","[unspecified]"];
 sC3 = ["[Interval method]","[Bullard method]","[Boot-strapping method]","[Numerical inversion]","[Other (specify in coments)]","[unspecified]"];
 sC11 = ["[Considered – p]","[Considered – T]","[Considered – pT]","[not considered]","[unspecified]"];
@@ -159,21 +168,23 @@ sC43 = ["[Lab - point source]","[Lab - line source / full space]","[Lab - line s
 sC44 = ["[Saturated measured in-situ]","[Recovered]","[Saturated measured]","[Saturated calculated]","[Dry measured]","[other (specify)]","[unspecified]"];
 sC45 = ["[Unrecorded ambient pT conditions]","[Recorded ambient pT conditions]","[Actual in-situ (pT) conditions]","[Replicated in-situ (p)]","[Replicated in-situ (T)]","[Replicated in-situ (pT)]","[Corrected in-situ (p)]","[Corrected in-situ (T)]","[Corrected in-situ (pT)]","[unspecified]"];
 sC46 = ["[T - Birch and Clark (1940)]","[T - Tikhomirov (1968)]","[T - Kutas & Gordienko (1971)]","[T - Anand et al. (1973)]","[T - Haenel & Zoth (1973)]","[T - Blesch et al. (1983)]","[T - Sekiguchi (1984)]","[T - Chapman et al. (1984)]","[T - Zoth & Haenel (1988)]","[T - Somerton (1992)]","[T - Sass et al. (1992)]","[T - Funnell et al. (1996)]","[T - Kukkonen et al. (1999)]","[T - Seipold (2001)]","[T - Vosteen & Schellschmidt (2003)]","[T - Sun et al. (2017)]","[T - Miranda et al. (2018)]","[T - Ratcliffe (1960)]","[p - Bridgman (1924)]","[p - Sibbitt (1975)]","[p - Kukkonen et al. (1999)]","[p - Seipold (2001)]","[p - Durutürk et al. (2002)]","[p - Demirci et al. (2004)]","[p - Görgülü et al. (2008)]","[p - Fuchs & Förster (2014)]","[pT - Ratcliffe (1960)]","[pT - Buntebarth (1991)]","[pT - Chapman & Furlong (1992)]","[pT - Emirov et al. (1997)]","[pT - Abdulagatov et al. (2006)]","[pT - Emirov & Ramazanova (2007)]","[pT - Abdulagatova et al. (2009)]","[pT - Ramazanova & Emirov (2010)]","[pT - Ramazanova & Emirov (2012)]","[pT - Emirov et al. (2017)]","[pT - Hyndman et al. (1974)]","[Site-specific experimental relationships]","[Other (specify in comments)]","[unspecified]"];
-sC48 = ["[Random or periodic depth sampling (number)]","[Characterize formation conductivities]","[Well log interpretation]","[Computation from probe sensing]","[Other]","[unspecified]"];
+#sC48 = ["[Random or periodic depth sampling (number)]","[Characterize formation conductivities]","[Well log interpretation]","[Computation from probe sensing]","[Other]","[unspecified]"];
+sC48 = [f"[Random or periodic depth sampling ({number})]","[Characterize formation conductivities]","[Well log interpretation]","[Computation from probe sensing]","[Other]","[unspecified]"];
 
 
 #     [Description]: To avoid case-sensitivity issues in the controlled vocabulary
 
-# In[10]:
+# In[11]:
 
 
 B = [item.lower() for item in B]
 P = [item.lower() for item in P]
+U = [item.lower() for item in U]
 
 
 #     [Description]: To store the controlled vocabulary in a dataframe structure
 
-# In[11]:
+# In[12]:
 
 
 str_data = {
@@ -182,7 +193,7 @@ str_data = {
 }
 
 
-# In[12]:
+# In[13]:
 
 
 sdf = pd.DataFrame(str_data, index=StrC)
@@ -190,7 +201,7 @@ sdf = pd.DataFrame(str_data, index=StrC)
 
 # ### 3.3.1. Pivot the DataFrame: Rows become columns
 
-# In[13]:
+# In[14]:
 
 
 tsdf = sdf.transpose()
@@ -201,7 +212,7 @@ tsdf
 
 #     [Description]: To avoid case-sensitivity issues in the controlled vocabulary
 
-# In[14]:
+# In[15]:
 
 
 tsdf = tsdf
@@ -216,7 +227,7 @@ tsdf
 
 #     [Description]: To perform computations on the entered HF entries only and skip the column labels. There are two conditions: firstly, when the first cell of the dataframe has the column label 'Obligation', the top 8 rows are considered description. Secondly, when the first cell has the column label 'Short Name', the top 2 rows are considered description. The function 'remove_rows()' below switches between these two conditions and removes the description to prepare the dataframe for operability with other functions.
 
-# In[15]:
+# In[16]:
 
 
 def remove_rows(df):
@@ -248,7 +259,7 @@ def remove_rows(df):
 
 #     [Description]: Convert all the columns to string data type. To resolve multiple values in a categorical field for an entry
 
-# In[16]:
+# In[17]:
 
 
 def change_type(df):
@@ -260,23 +271,13 @@ def change_type(df):
 
 # ## 5.2. Safe float conversion 
 
-# def safe_float_conversion(r):
-#     if r == '0':
-#         return 0.0
-#     try:
-#         return float(r)
-#     except ValueError:
-#         return None
-
-# In[17]:
+# In[18]:
 
 
 def safe_float_conversion(r):
-    r = r.strip()  # Remove any leading or trailing whitespace
-    
+    r = r.strip()  # Remove any leading or trailing whitespace    
     if r == '0':
-        return 0.0
-    
+        return 0.0    
     try:
         # Check if the first character is a minus sign
         if r[0] == '-':
@@ -287,26 +288,11 @@ def safe_float_conversion(r):
         return None
 
 
-# r='-10'
-
-# if float(r) or r=='0':
-#     p = safe_float_conversion(r)
-# p
-
-# p = safe_float_conversion(r)
-# p
-
-# if  0 <= p <= 19999.9:
-#     error_string = ""
-# else:
-#     error_string = "error"
-# error_string
-
 # # 6. Converting string values to lower case
 
 #     [Description]: To resolve case-sensitivity in the provided Heatflow database
 
-# In[18]:
+# In[19]:
 
 
 def toLower(df):
@@ -322,7 +308,7 @@ def toLower(df):
 
 #     [Description]: Check for mandatory fields indicated by 'Obligation' label in HF database. And store information about the nature of data, whether its borehole or probe sensing.
 
-# In[19]:
+# In[20]:
 
 
 def obligation(df):
@@ -336,16 +322,12 @@ def obligation(df):
 
 # ## 7.2.  Structure relevance for the current release
 
-# In[20]:
+# In[21]:
 
 
 def relevance(folder_path):
-
     files = os.listdir(folder_path)
-
-
     csv_files = [file for file in files if file.endswith('.csv')]
-
 
     if csv_files:
         first_csv_file_path = os.path.join(folder_path, csv_files[0])
@@ -360,7 +342,44 @@ def relevance(folder_path):
 
 #     [Description]: Complete check of vocabulary separately for numeric, string and date type columns
 
-# In[21]:
+# In[22]:
+
+
+#fg = "[unspecified];[probing (offshore/ocean)];nan;"
+#fg = "[drilling-clustering];[probing (offshore/ocean)]"
+#fg = ''
+fg = '[probing-clustering];[probing (offshore/ocean)]'
+fg_split = fg.split(';')
+fg_split
+
+
+# In[23]:
+
+
+if any(value in ['[other (specify in comments)]', '[unspecified]'] for value in fg_split):
+    error_string = " P12:Quality Check is not possible!,"
+elif any((value == 'nan' or '') for value in fg_split):
+    error_string = " P12:Mandatory entry is empty; Quality Check is not possible!,"
+elif any(value in P for value in fg_split) and any(value in B for value in fg_split):
+    error_string = " P12:Quality Check is not possible!,"
+else:
+    error_string = ""
+error_string
+
+
+# In[24]:
+
+
+if any(value in U for value in fg_split):
+    P12 = ""
+elif any(value in P for value in fg_split) and any(value in B for value in fg_split):
+    P12 = ""
+else:
+    P12 = fg_split[0] if fg_split else fg_split
+P12
+
+
+# In[25]:
 
 
 def vocabcheck(df,m_dict,domain):
@@ -371,14 +390,20 @@ def vocabcheck(df,m_dict,domain):
     for id in df.index:
         error_df.loc[id,'A'] = None
         error_df['A'] = error_df['A'].astype("string")
+
+        P12_split = (df.loc[id, 'P12']).split(';')
         
-        if df.loc[id, 'P12'] in ['[other (specify in comments)]', '[unspecified]']:
+        if any(value in ['[other (specify in comments)]', '[unspecified]'] for value in P12_split):
             error_string = " P12:Quality Check is not possible!,"
-        elif df.loc[id, 'P12'] == 'nan':
+        elif any(value == 'nan' for value in P12_split):
             error_string = " P12:Mandatory entry is empty; Quality Check is not possible!,"
+        elif any(value in P for value in P12_split) and any(value in B for value in P12_split):
+            error_string = " P12:Quality Check is not possible!,"
         else:
             error_string = ""
+
         error_df.loc[id,'A'] = error_string
+        
 
     for c in NumC:
         min_value = tndf.loc['Min', c]
@@ -388,6 +413,14 @@ def vocabcheck(df,m_dict,domain):
             error_df.loc[id,c] = None
             error_df[c] = error_df[c].astype("string")
             dfvalue = df.loc[id,c]
+
+            P12_split = (df.loc[id, 'P12']).split(';')
+            if any(value in U for value in P12_split):
+                P12 = ""
+            elif any(value in P for value in P12_split) and any(value in B for value in P12_split):
+                P12 = ""
+            else:
+                P12 = P12_split[0] if P12_split else df.loc[id, 'P12']
 
             while True:
                 dfvalue = dfvalue.split(';')
@@ -403,21 +436,25 @@ def vocabcheck(df,m_dict,domain):
                                 
                             elif math.isnan(r):
                                 if (m_dict[c] == 'M') and (df.loc[id, c]) == 'nan':
-                                    if ('B' in domain[c] and ((df.loc[id, 'P12']) in B)):
-                                        error_string = f" {c}:Mandatory entry is empty!," #set '[Unspecified]',"
-                                    elif ('S' in domain[c] and ((df.loc[id, 'P12']) in P)):
-                                        error_string = f" {c}:Mandatory entry is empty!," #set '[Unspecified]',"
-                                    elif ((('B'or'S') in domain[c]) and (df.loc[id, 'P12'] in ['[other (specify in comments)]', '[unspecified]', 'nan'])):
-                                        error_string = f" {c}:Mandatory entry is empty!," #set '[Unspecified]',"
+                                    if ('B' in domain[c] and (P12 in B)):
+                                        error_string = f" {c}:Mandatory entry is empty!,"
+                                    elif ('S' in domain[c] and (P12 in P)):                                        
+                                        if (c == 'C4') and (df.loc[id, 'P6']) != 'nan':
+                                            error_string = ""
+                                        else:
+                                            error_string = f" {c}:Mandatory entry is empty!,"
+                                            
+                                    elif ((('B'or'S') in domain[c]) and (P12 in U)):
+                                        error_string = f" {c}:Mandatory entry is empty!,"
                                     else:
                                         error_string = ""
                                 elif m_dict[c] == 'M':
-                                    if (df.loc[id, 'P12']) in B:
+                                    if P12 in B:
                                         if (c == 'C5') and (df.loc[id, 'C6'] is None):
                                             error_string = f" {c}:mandatory field!,"   
                                         else:
                                             error_string = ""
-                                    elif (df.loc[id, 'P12']) in P:
+                                    elif P12 in P:
                                         if (c == 'C6') and (df.loc[id, 'C5'] is None):
                                             error_string = f" {c}:mandatory field!,"
                                         elif (c == 'C23') and ((df.loc[id, 'C31'] or df.loc[id, 'C32']) is None):
@@ -425,7 +462,7 @@ def vocabcheck(df,m_dict,domain):
                                         else:
                                             error_string = ""
                                 else:
-                                    error_string = ""#error_string = f" {c}:P12: Mandatory entry is empty; Quality Check is not possible!,"  
+                                    error_string = ""
                             else:
                                 error_string = f" {c}:range violated," ###                                                                      
                         else:
@@ -441,7 +478,7 @@ def vocabcheck(df,m_dict,domain):
                     break
                 else:
                     dfvalue = dfvalue[-1]
-                          
+                         
     for c in StrC:
         string_values = tsdf.loc['Values', c]
 
@@ -450,13 +487,41 @@ def vocabcheck(df,m_dict,domain):
             error_df[c] = error_df[c].astype("string")
             dfvalue = df.loc[id,c]
 
+            P12_split = (df.loc[id, 'P12']).split(';')
+
+            if any(value in U for value in P12_split):
+                P12 = ""
+            elif any(value in P for value in P12_split) and any(value in B for value in P12_split):
+                P12 = ""
+            else:
+                P12 = P12_split[0] if P12_split else df.loc[id, 'P12']
+
             while True:
                 dfvalue = dfvalue.split(';')
 
                 for dfvalue in dfvalue:
                     dfvalue = dfvalue.strip()
+                    
+                    #new modifications
+                    if (c == 'C48') and (dfvalue.startswith("[random or periodic depth sampling (")):
+                        start_idx = dfvalue.find('(')
+                        end_idx = dfvalue.find(')')
+                        number_str = dfvalue[start_idx + 1:end_idx]
+                        
+                        try:
+                            number = int(number_str)
+                            string_values[0] = f"[random or periodic depth sampling ({number})]"
+                                                                                 
+                            if dfvalue in string_values:
+                                error_string = ""
+                            else:
+                                error_string = f" {c}:vocabulary warning,"
+                            
+                        except ValueError: 
+                            error_string = f" {c}:vocabulary warning,"
+                            
 
-                    if dfvalue in string_values:
+                    elif dfvalue in string_values:
                         error_string = ""
         
                     elif dfvalue == 'nan':
@@ -464,12 +529,12 @@ def vocabcheck(df,m_dict,domain):
                             if (c == 'C31' or 'C32') and (df.loc[id, 'C23'] is None):
                                 error_string = f" {c}:mandatory field!,"
                             else:
-                                if ('B' in domain[c] and ((df.loc[id, 'P12']) in B)):
-                                    error_string = f" {c}:Mandatory entry is empty!," #set '[Unspecified]',"
-                                elif ('S' in domain[c] and ((df.loc[id, 'P12']) in P)):
-                                    error_string = f" {c}:Mandatory entry is empty!," #set '[Unspecified]',"
-                                elif ((('B'or'S') in domain[c]) and (df.loc[id, 'P12'] in ['[other (specify in comments)]', '[unspecified]', 'nan'])):
-                                    error_string = f" {c}:Mandatory entry is empty!," #set '[Unspecified]',"
+                                if ('B' in domain[c] and (P12 in B)):
+                                    error_string = f" {c}:Mandatory entry is empty!,"
+                                elif ('S' in domain[c] and (P12 in P)):
+                                    error_string = f" {c}:Mandatory entry is empty!,"
+                                elif ((('B'or'S') in domain[c]) and (P12 in U)):
+                                    error_string = f" {c}:Mandatory entry is empty!,"
                                 else:
                                     error_string = "" #pass
                         else:
@@ -493,6 +558,15 @@ def vocabcheck(df,m_dict,domain):
         error_df['C38'] = error_df['C38'].astype("string")
         dfvalue = df.loc[id,'C38']
 
+        P12_split = (df.loc[id, 'P12']).split(';')
+
+        if any(value in U for value in P12_split):
+            P12 = ""
+        elif any(value in P for value in P12_split) and any(value in B for value in P12_split):
+            P12 = ""
+        else:
+            P12 = P12_split[0] if P12_split else df.loc[id, 'P12']
+
         while True:
                 dfvalue = dfvalue.split(';')
                     
@@ -502,12 +576,12 @@ def vocabcheck(df,m_dict,domain):
                     if dfvalue == '[unspecified]':
                         error_string = ""
                     elif df.loc[id, 'C38'] == 'nan':
-                        if ('B' in domain[c] and ((df.loc[id, 'P12']) in B)):
-                            error_string = " C38:Mandatory entry is empty!," #set '[Unspecified]',"
-                        elif ('S' in domain[c] and ((df.loc[id, 'P12']) in P)):
-                            error_string = " C38:Mandatory entry is empty!," #set '[Unspecified]',"
-                        elif ((('B'or'S') in domain[c]) and (df.loc[id, 'P12'] in ['[other (specify in comments)]', '[unspecified]', 'nan'])):
-                            error_string = f" {c}:Mandatory entry is empty!," #set '[Unspecified]',"
+                        if ('B' in domain[c] and (P12 in B)):
+                            error_string = " C38:Mandatory entry is empty!,"
+                        elif ('S' in domain[c] and (P12 in P)):
+                            error_string = " C38:Mandatory entry is empty!,"
+                        elif ((('B'or'S') in domain[c]) and (P12 in U)):
+                            error_string = f" {c}:Mandatory entry is empty!,"
                         else:
                             error_string = "" #pass
                     else:                        
@@ -545,24 +619,54 @@ def vocabcheck(df,m_dict,domain):
     return error_msg
 
 
-# # 9. Complete check
+# # 9. Final check
+
+# ## 9.1 Sort error
+
+# In[26]:
+
+
+def reorder_errors(error_str):
+    #errors = error_str.split(', ')
+    errors = re.split(r',\s*', error_str.strip())
+    
+    p_errors = [e for e in errors if e.startswith('P')]
+    c_errors = [e for e in errors if e.startswith('C')]
+    
+    p_errors_sorted = sorted(p_errors, key=lambda x: int(x[1:x.index(':')]))
+    c_errors_sorted = sorted(c_errors, key=lambda x: int(x[1:x.index(':')]))
+    
+    sorted_errors = p_errors_sorted + c_errors_sorted
+    
+    sorted_errors_str = ', '.join(sorted_errors)
+    
+    cleaned_errors_str = re.sub(r',\s*,\s*', ', ', sorted_errors_str)
+
+    if cleaned_errors_str.endswith(','):
+        cleaned_errors_str = cleaned_errors_str[:-1]
+    
+    return cleaned_errors_str
+
+
+# ## 9.2 Complete check
 
 #     [Description]: Calling previous functions to prepare data and perform vocabulary checking
 
-# In[22]:
+# In[27]:
 
 
 def Complete_check(df):
     m_dict, domain = obligation(df)
     result = vocabcheck(toLower(change_type(remove_rows(df))), m_dict, domain)
+    result['Error'] = result['Error'].apply(reorder_errors)
     return result
 
 
-# # 10. Attach to original data
+# # 10 Attach to original data
 
 #     [Description]: Attaching the combined results column to the original database with correct indexing.
 
-# In[23]:
+# In[28]:
 
 
 def attachOG(og):
@@ -585,13 +689,12 @@ def attachOG(og):
 
 #     [Description]: To generate results for all the Heatflow database in a folder stored in .csv format 
 
-# In[24]:
+# In[29]:
 
 
 def folder_result(folder_path):
 
-    csv_files = glob.glob(os.path.join(folder_path, '*.csv'))
-    
+    csv_files = glob.glob(os.path.join(folder_path, '*.csv'))    
 
     for csv_file_path in csv_files:
 
@@ -603,7 +706,7 @@ def folder_result(folder_path):
         else:
             output_excel_file = os.path.splitext(csv_file_path)[0] + '_vocab_check.xlsx'        
             df_result.to_excel(output_excel_file, index=False)
-            print(f"Result exported. Excel file saved as: {output_excel_file}")
+            print(f"Result exported: {output_excel_file}")
 
     for csv_file_path in csv_files:
         os.remove(csv_file_path)
@@ -615,19 +718,25 @@ def folder_result(folder_path):
 
 #      [Desclaimer]: When a new data release occurs and the relevancy (indicated by 'Obligation') of a column in the HF data structure is updated, ensure that you place the data structure files with the updated column relevancy into separate folders before running the code!!
 
-# In[25]:
+# In[30]:
 
 
 def check_vocabulary():
-    folder_path = input("Please enter the file directory: ")
+    folder_path = input("Please enter the file/s directory for vocabulary check: ")
     convert2UTF8csv(folder_path)
     folder_result(folder_path)
 
 
-# E:\voc_check\Try
-
-# In[ ]:
+# In[31]:
 
 
-get_ipython().run_cell_magic('time', '', 'check_vocabulary()\n')
+#get_ipython().run_cell_magic('time', '', 'check_vocabulary()\n'
+
+start_time = time.time()
+
+check_vocabulary()
+
+elapsed_time = time.time() - start_time
+print(f"Execution time: {elapsed_time} seconds")
+
 
