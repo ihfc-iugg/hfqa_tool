@@ -20,6 +20,7 @@ from datetime import datetime
 import glob
 import os
 import warnings
+import time
 
 #get_ipython().run_cell_magic('time', '', 'import pandas as pd\nimport numpy as np\nimport math\nfrom datetime import datetime\nimport glob\nimport os\nimport warnings\n')
 
@@ -987,13 +988,17 @@ def folder_result(folder_path):
 
 
 def quality_score():
-    folder_path = input("Please enter the file directory for quality scores: ")
+    folder_path = input("Please enter the file/s directory for quality scores: ")
     convert2UTF8csv(folder_path)
     folder_result(folder_path)
 
 
 # In[ ]:
-
+start_time = time.time()
 
 quality_score()
+
+elapsed_time = time.time() - start_time
+print(f"Execution time: {elapsed_time} seconds")
+
 
