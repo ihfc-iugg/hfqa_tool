@@ -12,7 +12,12 @@
 
 # Overview
 
-**Heat Flow Quality Analysis Toolbox** `hfqa_tool` is a Python package containing tools for independent testing of Heat Flow data quality and structure, adhering to a controlled vocabulary. This is developed in compliance with the paper by Fuchs et al. (2023) titled "[Quality-assurance of heat-flow data: The new structure and evaluation scheme of the IHFC Global Heat Flow Database](https://doi.org/10.1016/j.tecto.2023.229976)," published in Tectonophysics 863: 229976. Also revised for the newer release 2024.
+**Heat Flow Quality Analysis Toolbox** `hfqa_tool` is a Python package containing tools for independent testing of Heat Flow data quality and structure, adhering to a controlled vocabulary. This is developed in compliance with the paper by Fuchs et al. (2023) titled "[Quality-assurance of heat-flow data: The new structure and evaluation scheme of the IHFC Global Heat Flow Database](https://doi.org/10.1016/j.tecto.2023.229976)," published in Tectonophysics 863: 229976. Also revised for the newer release 2024. There are mainly 2 functions defined in this tool with description as follows:
+
+- `vocabulary_check()`: This set of code has been developed to check whether all the values entered in a Heatflow database adhere to a controlled vocabulary and proper structure described in the aforementioned scientific paper. It generates an error message for each entry where the value entered is out of bounds and does not meet the assigned criteria. The code also enables checking the vocabulary for multiple values entered in a single column for a particular Heatflow data entry.
+It's a recommended prerequisite before calculating 'Quality Scores' for a given Heatflow dataset.
+
+- `quality_scores()`: This code has been developed to assess the quality of the Heatflow database in terms of U-score (Uncertainty quantification), M-Score (Methodological quality), and P-Flags (Perturbation effects) adhering to the data structure described in the aforementioned scientific paper.
 
 # Documenation
 The official documentation with usage is at: 
