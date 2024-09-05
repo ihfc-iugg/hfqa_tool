@@ -81,10 +81,10 @@ python setup.py install --user
 - Follow steps from [Install from Github](#install-from-github).
 - `conda activate --myenv` #replace with your own environment name, with all installed [Python Libraries](#python-dependencies).
 - Run `python` in shell
-- `from hfqa_tool import check_vocabulary, quality_score`
+- `import hfqa_tool`
 - When prompted with `Please enter the file directory:`, provide the directory/location of your Heatflow data files.
 - If running on Linux or Mac OS, use forward slashes /. On Windows, backward slashes \ will work fine when assigning your directory.
-- Get results in the same folder :)
+- Get results in the same folder with execution time displayed :)
 ### PyPi
 - In Python terminal run code from [Install from PyPi](#install-from-pypi)
 ```
