@@ -10,7 +10,7 @@
 - **Sven Fuchs** (1)
 
 ### Credit authorship contribution statement 
-SFC: **Conceptual structure design, debugging and code developer**
+SFC: **Developer, conceptual structure design, debugging**
 
 EBP;BN;FN;SE;ESG;SF: **Checking code for applicability to the dataset**
 
