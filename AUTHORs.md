@@ -12,7 +12,7 @@
 ### Credit authorship contribution statement 
 SFC: **Conceptual structure design, debugging and code developer**
 
-EBP;BN;FN;SE;ESG;SF: **Checking code for applicability for the dataset**
+EBP;BN;FN;SE;ESG;SF: **Checking code for applicability to the dataset**
 
 ### Affiliations
   - (1) Helmholtz Centre Potsdam German Research Centre for Geoscience GFZ, Potsdam, Germany
