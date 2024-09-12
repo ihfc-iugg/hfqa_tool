@@ -10,8 +10,8 @@ setup(
         'openpyxl>=3.0.0',
         # 'glob', 'os', 'datetime', 'warnings', 're' and 'math' are part of the standard library
     ],
-    author="Saman Firdaus Chishti", "Elif Balkan-Pazvantoğlu", "Ben Norden", "Florian Neumann", "Samah Elbarbary", "Eskil Salis Gross", "Sven Fuchs"
-    author_email="chishti@gfz-potsdam.de", "sfc2022july@gmail.com", "elif.pazvantoglu@gfz-potsdam.de", "ben.norden@gfz-potsdam.de", "florian.neumann@gfz-potsdam.de", "samah.elbarbary@gfz-potsdam.de", "eskil.salis.gross@gfz-potsdam.de", "sven.fuchs@gfz-potsdam.de"
+    author="Saman Firdaus Chishti"
+    author_email="chishti@gfz-potsdam.de", "sfc2022july@gmail.com"
     description=(
         "`hfqa_tool` is a Python package containing tools for independent testing of "
         "Heat Flow data quality and structure, adhering to a controlled vocabulary. This "
@@ -29,4 +29,5 @@ setup(
         "Operating System :: OS Independent",
     ],
     python_requires='>=3.6',
+    contributors= ["Elif Balkan-Pazvantoğlu", "Ben Norden", "Florian Neumann", "Samah Elbarbary", "Eskil Salis Gross", "Sven Fuchs"]
 )
