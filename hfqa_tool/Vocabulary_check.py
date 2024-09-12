@@ -342,7 +342,7 @@ def relevance(folder_path):
 
 #     [Description]: Complete check of vocabulary separately for numeric, string and date type columns
 
-# In[25]:
+# In[22]:
 
 
 def vocabcheck(df,m_dict,domain):
@@ -586,7 +586,7 @@ def vocabcheck(df,m_dict,domain):
 
 # ## 9.1 Sort error
 
-# In[26]:
+# In[23]:
 
 
 def reorder_errors(error_str):
@@ -615,7 +615,7 @@ def reorder_errors(error_str):
 
 #     [Description]: Calling previous functions to prepare data and perform vocabulary checking
 
-# In[27]:
+# In[24]:
 
 
 def Complete_check(df):
@@ -629,7 +629,7 @@ def Complete_check(df):
 
 #     [Description]: Attaching the combined results column to the original database with correct indexing.
 
-# In[28]:
+# In[25]:
 
 
 def attachOG(og):
@@ -652,7 +652,7 @@ def attachOG(og):
 
 #     [Description]: To generate results for all the Heatflow database in a folder stored in .csv format 
 
-# In[29]:
+# In[26]:
 
 
 def folder_result(folder_path):
@@ -681,7 +681,7 @@ def folder_result(folder_path):
 
 #      [Desclaimer]: When a new data release occurs and the relevancy (indicated by 'Obligation') of a column in the HF data structure is updated, ensure that you place the data structure files with the updated column relevancy into separate folders before running the code!!
 
-# In[30]:
+# In[27]:
 
 
 def check_vocabulary():
@@ -690,7 +690,7 @@ def check_vocabulary():
     folder_result(folder_path)
 
 
-# In[31]:
+# In[28]:
 
 
 #get_ipython().run_cell_magic('time', '', 'check_vocabulary()\n'
