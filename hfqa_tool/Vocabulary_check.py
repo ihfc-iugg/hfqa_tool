@@ -342,43 +342,6 @@ def relevance(folder_path):
 
 #     [Description]: Complete check of vocabulary separately for numeric, string and date type columns
 
-# In[22]:
-
-
-#fg = "[unspecified];[probing (offshore/ocean)];nan;"
-#fg = "[drilling-clustering];[probing (offshore/ocean)]"
-#fg = ''
-fg = '[probing-clustering];[probing (offshore/ocean)]'
-fg_split = fg.split(';')
-fg_split
-
-
-# In[23]:
-
-
-if any(value in ['[other (specify in comments)]', '[unspecified]'] for value in fg_split):
-    error_string = " P12:Quality Check is not possible!,"
-elif any((value == 'nan' or '') for value in fg_split):
-    error_string = " P12:Mandatory entry is empty; Quality Check is not possible!,"
-elif any(value in P for value in fg_split) and any(value in B for value in fg_split):
-    error_string = " P12:Quality Check is not possible!,"
-else:
-    error_string = ""
-error_string
-
-
-# In[24]:
-
-
-if any(value in U for value in fg_split):
-    P12 = ""
-elif any(value in P for value in fg_split) and any(value in B for value in fg_split):
-    P12 = ""
-else:
-    P12 = fg_split[0] if fg_split else fg_split
-P12
-
-
 # In[25]:
 
 
