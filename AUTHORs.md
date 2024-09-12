@@ -1,7 +1,7 @@
 /Documentation/ @sfchishti
 
 ### Authors
-- **Saman Firdaus Chishti** (1)(2)
+- **Saman Firdaus Chishti** (1)(2) [chishti@gfz-potsdam.de](mailto:chishti@gfz-potsdam.de)
 - **Elif Balkan-Pazvantoğlu** (1)(3)
 - **Ben Norden** (1)
 - **Florian Neumann** (1)
