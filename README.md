@@ -101,6 +101,7 @@ import hfqa_tool
 
 # License
 **Copyright © 2024 German Geoscience Research Center (GFZ)**
+
 This work is licensed under multiple licenses:
 
 The source codes are licensed under **MIT**.
