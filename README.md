@@ -100,5 +100,8 @@ import hfqa_tool
 - When a new data release occurs and the relevancy (indicated by *'Obligation'*) of a column in the HF data structure is updated, make sure to place the data structure files with the updated column relevancy into separate folders before running the code.
 
 # License
+**Copyright © 2024 German Geoscience Research Center (GFZ)**
+This work is licensed under multiple licenses:
 
-This project is covered under the ** License**.
+The source codes are licensed under **MIT**.
+The documentation and the images are licensed under **CC-BY-4.0**.
