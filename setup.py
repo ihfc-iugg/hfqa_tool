@@ -25,7 +25,7 @@ setup(
     url="https://github.com/sfchishti/hfqa_tool",
     classifiers=[
         "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: ___ License",  # Use the appropriate license
+        "License :: OSI Approved :: MIT License",  # Use the appropriate license
         "Operating System :: OS Independent",
     ],
     python_requires='>=3.6',
