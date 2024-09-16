@@ -11,7 +11,7 @@ setup(
         # 'glob', 'os', 'datetime', 'warnings', 're' and 'math' are part of the standard library
     ],
     author="Saman Firdaus Chishti",
-    author_email="chishti@gfz-potsdam.de"
+    author_email="chishti@gfz-potsdam.de",
     description=(
         "`hfqa_tool` is a Python package containing tools for independent testing of "
         "Heat Flow data quality and structure, adhering to a controlled vocabulary. This "
