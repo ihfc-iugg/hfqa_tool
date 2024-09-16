@@ -12,7 +12,6 @@ setup(
     ],
     author="Saman Firdaus Chishti"
     author_email="chishti@gfz-potsdam.de",
-    # second email="sfc2022july@gmail.com"
     description=(
         "`hfqa_tool` is a Python package containing tools for independent testing of "
         "Heat Flow data quality and structure, adhering to a controlled vocabulary. This "
