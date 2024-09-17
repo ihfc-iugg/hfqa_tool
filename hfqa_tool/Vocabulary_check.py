@@ -11,29 +11,19 @@
 # 
 # The code is intended to be published on the GFZ website for the global scientific community to check if any Heatflow dataset adheres to the data structure described in the aforementioned scientific paper. It's a recommended prerequisite before calculating 'Quality Scores' for a given Heatflow dataset. The code for calculating 'Quality Scores' is provided in a separate document.
 
-# ![Vocab Image](Graphics//Vocab.jpg)
+# ![Vocab Image](Graphics/Vocab.jpg)
 
 # # 1. Importing libraries
 
 # In[1]:
 
-import pandas as pd
-import numpy as np
-import math
-from datetime import datetime
-import openpyxl
-import warnings
-import glob
-import os
-import time
-import re
-#get_ipython().run_cell_magic('time', '', 'import pandas as pd\nimport numpy as np\nimport math\nfrom datetime import datetime\nimport openpyxl\nimport warnings\nimport glob\nimport os\n')
+
+get_ipython().run_cell_magic('time', '', 'import pandas as pd\nimport numpy as np\nimport math\nfrom datetime import datetime\nimport openpyxl\nimport warnings\nimport glob\nimport os\nimport re\n')
 
 
 # In[2]:
 
 
-# Suppress specific warnings
 warnings.filterwarnings("ignore", category=UserWarning, module='openpyxl')
 
 
@@ -99,7 +89,7 @@ def extract10K(df,start):
 # In[5]:
 
 
-NumC = ['P1','P2','P4','P5','P6','P10','P11','C4','C5','C6','C22','C23','C24','C27','C28','C29','C30','C33','C34','C37','C39','C40','C47']
+NumC = ['P1','P2','P4','P5','P6','P10','P11','C1','C4','C5','C6','C22','C23','C24','C27','C28','C29','C30','C33','C34','C37','C39','C40','C47']
 StrC = ['P7','P9','P12','P13','C3','C11','C12','C13','C14','C15','C17','C18','C19','C21','C31','C32','C35','C36','C41','C42','C43','C44','C45','C46','C48']
 DateC = ['C38']
 
@@ -112,9 +102,9 @@ DateC = ['C38']
 
 
 num_data = {
-    #'ID': ['P1','P2','P4','P5','P6','P10','P11','C4','C5','C6','C22','C23','C24','C27','C28','C29','C30','C33','C34','C37','C39','C40','C47'],
-    'Min': [-999999.9,0,-90.00000,-180.00000,-12000,-12000,-12000,0,0,0,0,0,-9.99,-99999.99,-99999.99,-99999.99,-99999.99,0,0,0,0,0,0],
-    'Max': [999999.9,999999.9,90.00000,180.00000,9000,9000,9000,19999.9,19999.9,999.9,99.99,99.99,99.99,99999.99,99999.99,99999.99,99999.99,99999,99999,999999,99.99,99.99,9999]
+    #'ID': ['P1','P2','P4','P5','P6','P10','P11','C1','C2','C4','C5','C6','C22','C23','C24','C27','C28','C29','C30','C33','C34','C37','C39','C40','C47'],
+    'Min': [-999999.9,0,-90.00000,-180.00000,-12000,-12000,-12000,-999999.9,0,0,0,0,0,-9.99,-99999.99,-99999.99,-99999.99,-99999.99,0,0,0,0,0,0],
+    'Max': [999999.9,999999.9,90.00000,180.00000,9000,9000,9000,999999.9,19999.9,19999.9,999.9,99.99,99.99,99.99,99999.99,99999.99,99999.99,99999.99,99999,99999,999999,99.99,99.99,9999]
 }
 
 
@@ -464,9 +454,10 @@ def vocabcheck(df,m_dict,domain):
 
                 for dfvalue in dfvalue:
                     dfvalue = dfvalue.strip()
-                    
-                    #new modifications
-                    if (c == 'C48') and (dfvalue.startswith("[random or periodic depth sampling (")):
+                    # new modifications
+                    if (c == 'C48') and (dfvalue == "[random or periodic depth sampling (number)]"):
+                        error_string = ""
+                    elif (c == 'C48') and (dfvalue.startswith("[random or periodic depth sampling (")):
                         start_idx = dfvalue.find('(')
                         end_idx = dfvalue.find(')')
                         number_str = dfvalue[start_idx + 1:end_idx]
@@ -481,7 +472,8 @@ def vocabcheck(df,m_dict,domain):
                                 error_string = f" {c}:vocabulary warning,"
                             
                         except ValueError: 
-                            error_string = f" {c}:vocabulary warning,"
+                            # new modifications
+                            error_string = f" {c}:Enter a number,"
                             
 
                     elif dfvalue in string_values:
@@ -685,21 +677,13 @@ def folder_result(folder_path):
 
 
 def check_vocabulary():
-    folder_path = input("Please enter the file/s directory for vocabulary check: ")
+    folder_path = input("Please enter the file directory: ")
     convert2UTF8csv(folder_path)
     folder_result(folder_path)
 
 
-# In[28]:
+# In[ ]:
 
 
-#get_ipython().run_cell_magic('time', '', 'check_vocabulary()\n'
-
-start_time = time.time()
-
-check_vocabulary()
-
-elapsed_time = time.time() - start_time
-print(f"Execution time: {elapsed_time} seconds")
-
+get_ipython().run_cell_magic('time', '', 'check_vocabulary()\n')
 
