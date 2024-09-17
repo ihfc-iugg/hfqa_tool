@@ -69,6 +69,24 @@ python setup.py install --user
 - `python3 setup.py build_ext --inplace  # for cython`, if you want to test in-place, first execute this
 
 # Setting up the development environment:
+### Prerequisites
+
+Make sure you have the following installed:
+
+- [Python](https://www.python.org/) 3.x (Ensure you have the correct version)
+- [pip](https://pip.pypa.io/en/stable/) (Python package installer)
+- [virtualenv](https://virtualenv.pypa.io/en/stable/) (Optional but recommended)
+- Git
+
+### Cloning the Repository
+
+Clone the project repository using Git:
+
+```bash
+git clone https://github.com/yourusername/yourproject.git
+cd yourproject
+
+### Select branch
 
 # Running code
 ### Directly
