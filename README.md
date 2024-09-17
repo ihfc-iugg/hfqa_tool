@@ -96,13 +96,16 @@ You're now on development mode. Make sure to make proper commit message and
 check your credentials as committer. For example:
 bash
 ```
-git commit -m "Vocab_check.ipynb:Included C1"
+git commit -m "Vocab_check.ipynb:your_commit"
 ```
 To configue yourself as committer try:
 
 ```
 git config user.name "Your_name"
 git config user.email "your_email@example.com"
+```
+```
+git push
 ```
 
 
