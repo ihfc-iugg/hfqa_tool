@@ -82,11 +82,16 @@ Make sure you have the following installed:
 
 Clone the project repository using Git:
 
-```bash
-git clone https://github.com/yourusername/yourproject.git
-cd yourproject
+```
+git clone https://github.com/sfchishti/hfqa_tool.git
+cd hfqa_tool
+```
 
 ### Select branch
+
+```
+git checkout contribute
+```
 
 # Running code
 ### Directly
