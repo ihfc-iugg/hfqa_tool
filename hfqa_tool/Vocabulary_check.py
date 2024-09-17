@@ -687,7 +687,7 @@ def folder_result(folder_path):
 
 
 def check_vocabulary():
-    folder_path = input("Please enter the file directory: ")
+    folder_path = input("Please enter the file/s directory for vocabulary check: ")
     convert2UTF8csv(folder_path)
     folder_result(folder_path)
 
