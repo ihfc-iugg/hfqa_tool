@@ -62,7 +62,11 @@ pip3 install git+https://github.com/sfchishti/hfqa_tool.git
 ### Install from Github
 ```
 git clone https://github.com/sfchishti/hfqa_tool.git
+```
+```
 cd hfqa_tool
+```
+```
 python setup.py install --user
 ```
 - `sudo`, if required
