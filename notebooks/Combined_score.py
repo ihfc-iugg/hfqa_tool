@@ -13,8 +13,16 @@
 
 # In[1]:
 
+import pandas as pd
+import numpy as np
+import math
+from datetime import datetime
+import glob
+import os
+import warnings
+import time
 
-get_ipython().run_cell_magic('time', '', 'import pandas as pd\nimport numpy as np\nimport math\nfrom datetime import datetime\nimport glob\nimport os\nimport warnings\n')
+#get_ipython().run_cell_magic('time', '', 'import pandas as pd\nimport numpy as np\nimport math\nfrom datetime import datetime\nimport glob\nimport os\nimport warnings\n')
 
 
 # In[2]:
@@ -964,7 +972,10 @@ def quality_score():
 
 
 # In[ ]:
-
+start_time = time.time()
 
 quality_score()
+
+elapsed_time = time.time() - start_time
+print(f"Execution time: {elapsed_time} seconds")
 
