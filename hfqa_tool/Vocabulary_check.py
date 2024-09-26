@@ -30,7 +30,6 @@ import re
 
 #get_ipython().run_cell_magic('time', '', 'import pandas as pd\nimport numpy as np\nimport math\nfrom datetime import datetime\nimport openpyxl\nimport warnings\nimport glob\nimport os\nimport re\n')
 
-
 # In[2]:
 
 
@@ -146,22 +145,22 @@ number = 0
 # In[10]:
 
 
-B = ["[Drilling]","[Drilling-Clustering]","[Mining]","[Tunneling]","[GTM]"]
+B = ["[Drilling]","[Drilling-Clustering]","[Mining]","[Tunneling]","[GTM]","[Indirect (GTM, CPD, etc.)]"]
 P = ["[Probing (onshore/lake, river, etc.)]","[Probing (offshore/ocean)]","[Probing-Clustering]"]
 U = ["[Other (specify in comments)]","[unspecified]","nan",""];
-sP7 = ["[Onshore (continental)]","[Onshore (lake, river, etc.)]","[Offshore (continental)]","[Offshore (marine)]","[unspecified])"];
+sP7 = ["[Onshore (continental)]","[Onshore (lake, river, etc.)]","[Offshore (continental)]","[Offshore (marine)]","[unspecified]"];
 sP9=sC9 = ["[Yes]","[No]","[Unspecified]"];
-sP12 = ["[Drilling]","[Mining]","[Tunneling]","[GTM]","[Probing (onshore/lake, river, etc.)]","[Probing (offshore/ocean)]","[Drilling-Clustering]","[Probing-Clustering]","[Other (specify in comments)]","[unspecified]"];
+sP12 = ["[Drilling]","[Mining]","[Tunneling]","[GTM]","[Indirect (GTM, CPD, etc.)]","[Probing (onshore/lake, river, etc.)]","[Probing (offshore/ocean)]","[Drilling-Clustering]","[Probing-Clustering]","[Other (specify in comments)]","[unspecified]"];
 sP13 = ["[Hydrocarbon]","[Underground storage]","[Geothermal]","[Groundwater]","[Mapping]","[Research]","[Mining]","[Tunneling]","[Other (specify in comments)]","[unspecified]"];
-sC3 = ["[Interval method]","[Bullard method]","[Boot-strapping method]","[Numerical inversion]","[Other (specify in coments)]","[unspecified]"];
+sC3 = ["[Interval method]","[Bullard method]","[Boot-strapping method]","[Other numerical computations]","[Other (specify in coments)]","[unspecified]"];
 sC11 = ["[Considered – p]","[Considered – T]","[Considered – pT]","[not considered]","[unspecified]"];
 sC12 = ["[Tilt corrected]","[Drift corrected]","[not corrected]","[Corrected (specify)]","[unspecified]"];
 sC13=sC14=sC15=sC16=sC17=sC18=sC19 = ["[Present and corrected]","[Present and not corrected]","[Present not significant]","[not recognized]","[unspecified]"];
 sC20 = ["[Expedition/Cruise number]","[R/V Ship]","[D/V Platform]","[D/V Glomar Challenger]","[D/V JOIDES Resolution]","[Other (specify in comments)]","[unspecified]"];
 sC21 = ["[Single Steel probe (Bullard)]","[Single Steel probe (Bullard) in-situ TC]","[Violin-Bow probe (Lister)]","[Outrigger probe (Von Herzen) in-situ TC, without corer]","[Outrigger probe (Haenel) in-situ TC, with corer]","[Outrigger probe (Ewing) with corer]","[Outrigger probe (Ewing) without corer]","[Outrigger probe (Lister) with corer]","[Outrigger probe (autonomous) without corer]","[Outrigger probe (autonomous) with corer]","[Submersible probe]","[Other (specify in comments)]","[unspecified]"];
-sC31 = ["[LOGeq]","[LOGpert]","[cLOG]","[DTSeq]","[DTSpert]","[cDTS]","[BHT]","[cBHT]","[DST]","[cDST]","[RTDeq]","[RTDpert]","[cRTD]","[CPD]","[XEN]","[GTM]","[BSR]","[BLK]","[ODTT-PC]","[ODTT-TP]","[SUR]","[unspecified]","[Other (specify in comments)]"];
-sC32 = ["[LOGeq]","[LOGpert]","[cLOG]","[DTSeq]","[DTSpert]","[cDTS]","[BHT]","[cBHT]","[DST]","[cDST]","[RTDeq]","[RTDpert]","[cRTD]","[CPD]","[XEN]","[GTM]","[BSR]","[BLK]","[ODTT-PC]","[ODTT-TP]","[unspecified]","[Other (specify in comments)]"];
-sC35=sC36 = ["[Horner plot]","[Cylinder source method]","[Line source explosion method]","[Inverse numerical modelling]","[Other published correction]","[unspecified]","[not corrected]","[AAPG correction]"];  
+sC31 = ["[LOGeq]","[LOGpert]","[cLOG]","[DTSeq]","[DTSpert]","[cDTS]","[BHT]","[cBHT]","[HT-FT]","[cHT-FT]","[RTDeq]","[RTDpert]","[cRTD]","[CPD]","[XEN]","[GTM]","[BSR]","[BLK]","[ODTT-PC]","[ODTT-TP]","[SUR]","[GRT]","[EGRT]","[unspecified]","[Other (specify in comments)]"];
+sC32 = ["[LOGeq]","[LOGpert]","[cLOG]","[DTSeq]","[DTSpert]","[cDTS]","[BHT]","[cBHT]","[HT-FT]","[cHT-FT]","[RTDeq]","[RTDpert]","[cRTD]","[CPD]","[XEN]","[GTM]","[BSR]","[BLK]","[ODTT-PC]","[ODTT-TP]","[GRT]","[EGRT]","[unspecified]","[Other (specify in comments)]"];
+sC35=sC36 = ["[Horner plot]","[Cylinder source method]","[Line source explosion method]","[Inverse numerical modelling]","[Other published correction]","[unspecified]","[not corrected]","[AAPG correction]","[Harrison correction]"];  
 sC41 = ["[In-situ probe]","[Core-log integration]","[Core samples]","[Cutting samples]","[Outcrop samples]","[Well-log interpretation]","[Mineral computation]","[Assumed from literature]","[other (specify)]","[unspecified]"];
 sC42 = ["[Actual heat-flow location]","[Other location]","[Literature/unspecified]","[Unspecified]"];
 sC43 = ["[Lab - point source]","[Lab - line source / full space]","[Lab - line source / half space]","[Lab - plane source / full space]","[Lab - plane source / half space]","[Lab - other]","[Probe - pulse technique]","[Well-log - deterministic approach]","[Well-log - empirical equation]","[Estimation - from chlorine content]","[Estimation - from water content/porosity]","[Estimation - from lithology and literature]","[Estimation - from mineral composition]","[unspecified]"];
@@ -215,7 +214,6 @@ tsdf
 # In[15]:
 
 
-tsdf = tsdf
 for col in tsdf.columns:
     for id in tsdf.index:
         if isinstance(tsdf.loc[id, col], list):
@@ -485,6 +483,11 @@ def vocabcheck(df,m_dict,domain):
                             # new modifications
                             error_string = f" {c}:Enter a number,"
                             
+                    elif (c == 'C43') and ('[egrt]' in (df.loc[id, 'C31'] or df.loc[id, 'C32'])):
+                        if dfvalue == "[probe - pulse technique]":
+                            error_string = ''
+                        else:
+                            error_string = f" {c}:Please check TC method!,"
 
                     elif dfvalue in string_values:
                         error_string = ""
@@ -521,7 +524,7 @@ def vocabcheck(df,m_dict,domain):
     for id in df.index:
         error_df.loc[id,'C38'] = None
         error_df['C38'] = error_df['C38'].astype("string")
-        dfvalue = df.loc[id,'C38']
+        dfvalue = (df.loc[id,'C38']).lower()
 
         P12_split = (df.loc[id, 'P12']).split(';')
 
@@ -687,7 +690,7 @@ def folder_result(folder_path):
 
 
 def check_vocabulary():
-    folder_path = input("Please enter the file/s directory for vocabulary check: ")
+    folder_path = input("Please enter the file directory: ")
     convert2UTF8csv(folder_path)
     folder_result(folder_path)
 
