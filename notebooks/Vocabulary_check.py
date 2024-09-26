@@ -17,9 +17,18 @@
 
 # In[1]:
 
+import pandas as pd
+import numpy as np
+import math
+from datetime import datetime
+import glob
+import os
+import warnings
+import time
+import openpyxl
+import re
 
-get_ipython().run_cell_magic('time', '', 'import pandas as pd\nimport numpy as np\nimport math\nfrom datetime import datetime\nimport openpyxl\nimport warnings\nimport glob\nimport os\nimport re\n')
-
+#get_ipython().run_cell_magic('time', '', 'import pandas as pd\nimport numpy as np\nimport math\nfrom datetime import datetime\nimport openpyxl\nimport warnings\nimport glob\nimport os\nimport re\n')
 
 # In[2]:
 
@@ -687,7 +696,10 @@ def check_vocabulary():
 
 
 # In[ ]:
+start_time = time.time()
 
+check_vocabulary()
 
-get_ipython().run_cell_magic('time', '', 'check_vocabulary()\n')
+elapsed_time = time.time() - start_time
+print(f"Execution time: {elapsed_time} seconds")
 
