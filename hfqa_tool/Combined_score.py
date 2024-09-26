@@ -966,7 +966,7 @@ def folder_result(folder_path):
 
 
 def quality_score():
-    folder_path = input("Please enter the file directory: ")
+    folder_path = input("Please enter the file directory for score calculation: ")
     convert2UTF8csv(folder_path)
     folder_result(folder_path)
 
