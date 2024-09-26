@@ -28,7 +28,6 @@ import time
 # In[2]:
 
 
-# Suppress specific warnings
 warnings.filterwarnings("ignore", category=UserWarning, module='openpyxl')
 
 
@@ -40,28 +39,21 @@ warnings.filterwarnings("ignore", category=UserWarning, module='openpyxl')
 
 
 def convert2UTF8csv(folder_path):    
-    # Get all .xlsx files in the folder
     excel_files = glob.glob(os.path.join(folder_path, '*.xlsx'))
 
     for excel_file_path in excel_files:
-        # Skip files ending with '_vocab_check.xlsx'
         if excel_file_path.endswith('_vocab_check.xlsx') or excel_file_path.endswith('_scores_result.xlsx'):
             continue
 
         try:
-            # Specify the engine explicitly
             excel_file = pd.ExcelFile(excel_file_path, engine='openpyxl')
             
-            # Parse the 'data list' sheet
             data_list_sheet = excel_file.parse('data list')
             
-            # Generate the output CSV file path
             output_csv_file = os.path.splitext(excel_file_path)[0] + '.csv'
             
-            # Save the sheet to a CSV file with UTF-8 encoding
             data_list_sheet.to_csv(output_csv_file, index=False, encoding='utf-8')
             
-            # Clean up
             del data_list_sheet
             del excel_file
             
@@ -122,7 +114,7 @@ DateC = ['C38']
 # In[6]:
 
 
-B = ['[drilling]','[drilling-clustering]', '[mining]', '[tunneling]']
+B = ['[drilling]','[drilling-clustering]', '[mining]', '[tunneling]', '[indirect (gtm, cpd, etc.)]']
 P = ['[probing (onshore/lake, river, etc.)]', '[probing (offshore/ocean)]', '[probing-clustering]']
 
 
@@ -453,13 +445,14 @@ def Bore_t_M_score(df):
             p1=p2=p3=least_penalty= None 
             
             if (df.loc[id,'C31'] == "[sur]") and (df.loc[id,'C32'] in ['[cpd]', '[xen]', '[gtm]', '[bsr]', '[bht]',
-                                                                       '[dst]', '[rtdpert]', '[cbht]', '[cdst]',
-                                                                       '[rtdeq]', '[rtdc]', '[oddt-pc]', '[oddt-tp]']):
+                                                                       '[ht-ft]', '[rtdpert]', '[cbht]', '[cht-ft]',
+                                                                       '[rtdeq]', '[rtdc]', '[oddt-pc]', '[oddt-tp]',
+                                                                      "[grt]","[egrt]"]): # modification
                 if df.loc[id,'C32'] in ['[cpd]', '[xen]', '[gtm]', '[bsr]'] :
                     p1 = -0.6     
-                elif df.loc[id,'C32'] in ['[bht]', '[dst]', '[rtdpert]']:
+                elif df.loc[id,'C32'] in ['[bht]', '[ht-ft]', '[rtdpert]']:
                     p2 = -0.5
-                elif df.loc[id,'C32'] in ['[cbht]', '[cdst]', '[rtdeq]', '[rtdc]', '[oddt-pc]', '[oddt-tp]']:
+                elif df.loc[id,'C32'] in ['[cbht]', '[cht-ft]', '[rtdeq]', '[rtdc]', '[oddt-pc]', '[oddt-tp]',"[grt]","[egrt]"]:
                     p3 = -0.3
                 else:
                     error_string = error_string + "C32"
@@ -477,18 +470,20 @@ def Bore_t_M_score(df):
                     
             elif (15 > df.loc[id,'C37'] > 2) and ((df.loc[id,'C31'] or df.loc[id,'C32']) in ['[cpd]', '[xen]', '[gtm]',
                                                                                              '[bsr]', '[logpert]', '[dtspert]',
-                                                                                             '[bht]', '[dst]', '[rtdpert]',
+                                                                                             '[bht]', '[ht-ft]', '[rtdpert]',
                                                                                              '[blk]', '[logeq]', '[clog]',
                                                                                              '[dtseq]', '[cdts]', '[cbht]',
-                                                                                             '[dst]', '[rtdeq]', '[rtdc]',
-                                                                                             '[oddt-pc]', '[oddt-tp]']):
+                                                                                             '[ht-ft]', '[rtdeq]', '[rtdc]',
+                                                                                             '[oddt-pc]', '[oddt-tp]',
+                                                                                            "[grt]","[egrt]"]): # modification
                 if (df.loc[id,'C31'] or df.loc[id,'C32']) in ['[cpd]', '[xen]', '[gtm]', '[bsr]']:
                     p1 = -0.5
-                elif (df.loc[id,'C31'] or df.loc[id,'C32']) in ['[logpert]', '[dtspert]', '[bht]', '[dst]', '[rtdpert]',
+                elif (df.loc[id,'C31'] or df.loc[id,'C32']) in ['[logpert]', '[dtspert]', '[bht]', '[ht-ft]', '[rtdpert]',
                                                                 '[blk]']:
                     p2 = -0.3
                 elif (df.loc[id,'C31'] or df.loc[id,'C32']) in ['[logeq]', '[clog]', '[dtseq]', '[cdts]', '[cbht]',
-                                                                '[dst]', '[rtdeq]', '[rtdc]', '[oddt-pc]', '[oddt-tp]']:
+                                                                '[ht-ft]', '[rtdeq]', '[rtdc]', '[oddt-pc]', '[oddt-tp]',
+                                                               "[grt]","[egrt]"]: # modification
                     p3 = -0.1
                 else:
                     error_string = error_string + "C31 or C32"
@@ -903,11 +898,7 @@ def combined_score(df):
 
 def attachOG(og):
     result = combined_score(og)
-    
-
-    
     if og.at[0, 'ID'] == 'Obligation':
-        # Sample data for result_structure
         result_structure_data = {
             "U_score": ['-', '-', '-', 'uncertainty quantification', '-', '-', 'U-score'],
             "M_score": ['-', '-', '-', 'methodological quality', '-', '-', 'M-score'],
@@ -916,15 +907,9 @@ def attachOG(og):
         }
         result_structure = pd.DataFrame(result_structure_data)
         
-        
-        # Offset merge for 'Obligation' by 6 rows
-        #result.index = result.index + 6
-        
-        # Concatenate dataframes with result_structure at the top
         result = pd.concat([result_structure, result], ignore_index=True)
         
     elif og.at[0, 'ID'] == 'Short Name':
-        # Sample data for result_structure
         result_structure_data = {
             "U_score": ['U-score'],
             "M_score": ['M-score'],
@@ -933,15 +918,10 @@ def attachOG(og):
         }
         result_structure = pd.DataFrame(result_structure_data)
         
-        # Offset merge for 'Short Name' by 1 rows
-        #result.index = result.index + 1
-        
-        # Concatenate dataframes with result_structure at the top
         result = pd.concat([result_structure, result], ignore_index=True)
     
     og = pd.merge(og, result[['Combined_score','U_score','M_score','P_flags']], left_index=True, right_index=True, how='left')
     
-    # Rename multiple columns
     og.rename(columns={"Combined_score": "A9", 
                        "U_score": "A10", 
                        "M_score": "A11", 
@@ -974,10 +954,8 @@ def folder_result(folder_path):
         
         print(f"Result exported. Excel file saved as: {output_excel_file}")
 
-    # Delete all the .csv files after processing
     for csv_file_path in csv_files:
         os.remove(csv_file_path)
-        #print(f"Deleted file: {csv_file_path}")
 
 
 # # 12. hfqa_tool function
@@ -988,7 +966,7 @@ def folder_result(folder_path):
 
 
 def quality_score():
-    folder_path = input("Please enter the file/s directory for quality scores: ")
+    folder_path = input("Please enter the file directory for score calculation: ")
     convert2UTF8csv(folder_path)
     folder_result(folder_path)
 
@@ -1000,5 +978,4 @@ quality_score()
 
 elapsed_time = time.time() - start_time
 print(f"Execution time: {elapsed_time} seconds")
-
 
