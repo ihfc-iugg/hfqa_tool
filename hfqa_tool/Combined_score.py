@@ -15,12 +15,11 @@
 
 import pandas as pd
 import numpy as np
-import math
-from datetime import datetime
 import glob
 import os
 import warnings
 import time
+import multiprocessing
 
 #get_ipython().run_cell_magic('time', '', 'import pandas as pd\nimport numpy as np\nimport math\nfrom datetime import datetime\nimport glob\nimport os\nimport warnings\n')
 
@@ -939,43 +938,44 @@ def attachOG(og):
 # In[27]:
 
 
-def folder_result(folder_path):
-
-    csv_files = glob.glob(os.path.join(folder_path, '*.csv'))
+def quality_score(csv_file_path):
     
-    for csv_file_path in csv_files:
-        df = pd.read_csv(csv_file_path)
-        
-        df_result = attachOG(df)
-        
-        output_excel_file = os.path.splitext(csv_file_path)[0] + '_scores_result.xlsx'
-        
-        df_result.to_excel(output_excel_file, index=False)
-        
-        print(f"Result exported. Excel file saved as: {output_excel_file}")
+    df = pd.read_csv(csv_file_path)
+    
+    df_result = attachOG(df)
+    
+    output_excel_file = os.path.splitext(csv_file_path)[0] + '_scores_result.xlsx'
+    
+    df_result.to_excel(output_excel_file, index=False)
+    
+    print(f"Result exported. Excel file saved as: {output_excel_file}")
 
-    for csv_file_path in csv_files:
-        os.remove(csv_file_path)
-
-
-# # 12. hfqa_tool function
-
-#      [Description]: To calculate Quality score for all the HF dataframe files in a folder.
-
-# In[28]:
-
-
-def quality_score():
-    folder_path = input("Please enter the file directory for score calculation: ")
-    convert2UTF8csv(folder_path)
-    folder_result(folder_path)
+    os.remove(csv_file_path)
 
 
 # In[ ]:
-start_time = time.time()
+# # 12. hfqa_tool function
 
-quality_score()
+#      [Description]: To calculate Quality score for all the HF dataframe files in a folder.
+# Parallel processing
+if __name__ == "__main__":
+    # Get user input for the folder path just once
+    folder_path = input("Please enter the file directory for vocabulary check: ")
+    convert2UTF8csv(folder_path)
 
-elapsed_time = time.time() - start_time
-print(f"Execution time: {elapsed_time} seconds")
+    csv_files = glob.glob(os.path.join(folder_path, '*.csv'))   
+
+    num_workers = 6
+    start_time = time.time()
+
+    # Using multiprocessing pool to parallelize the task
+    pool = multiprocessing.Pool(num_workers)
+    
+    # Distribute the folder paths to workers using starmap (folder_paths is passed as a list of arguments)
+    pool.map(quality_score, csv_files)  # map used since only one argument is needed
+    
+    pool.close()
+    pool.join()
+
+    print(f"Processing completed in {time.time() - start_time} seconds.")
 

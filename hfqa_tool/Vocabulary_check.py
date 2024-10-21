@@ -18,15 +18,14 @@
 # In[1]:
 
 import pandas as pd
-import numpy as np
 import math
 from datetime import datetime
 import glob
 import os
 import warnings
 import time
-import openpyxl
 import re
+import multiprocessing
 
 #get_ipython().run_cell_magic('time', '', 'import pandas as pd\nimport numpy as np\nimport math\nfrom datetime import datetime\nimport openpyxl\nimport warnings\nimport glob\nimport os\nimport re\n')
 
@@ -660,46 +659,44 @@ def attachOG(og):
 # In[26]:
 
 
-def folder_result(folder_path):
+def check_vocabulary(csv_file_path):
+    df = pd.read_csv(csv_file_path)
+    df_result = attachOG(df)
 
-    csv_files = glob.glob(os.path.join(folder_path, '*.csv'))    
+    if df_result['Error'].eq('').all():
+        print("There is no error. Data is ready for Quality Check!")
+    else:
+        output_excel_file = os.path.splitext(csv_file_path)[0] + '_vocab_check.xlsx'        
+        df_result.to_excel(output_excel_file, index=False)
+        print(f"Result exported: {output_excel_file}")
 
-    for csv_file_path in csv_files:
-
-        df = pd.read_csv(csv_file_path)
-        df_result = attachOG(df)
-
-        if df_result['Error'].eq('').all():
-            print("There is no error. Data is ready for Quality Check!")
-        else:
-            output_excel_file = os.path.splitext(csv_file_path)[0] + '_vocab_check.xlsx'        
-            df_result.to_excel(output_excel_file, index=False)
-            print(f"Result exported: {output_excel_file}")
-
-    for csv_file_path in csv_files:
-        os.remove(csv_file_path)
-
-
-# # 12. hfqa_tool function
-
-#      [Description]: To check the vocabulary for all the HF dataframe files in a folder.
-
-#      [Desclaimer]: When a new data release occurs and the relevancy (indicated by 'Obligation') of a column in the HF data structure is updated, ensure that you place the data structure files with the updated column relevancy into separate folders before running the code!!
-
-# In[27]:
-
-
-def check_vocabulary():
-    folder_path = input("Please enter the file directory for vocabulary check: ")
-    convert2UTF8csv(folder_path)
-    folder_result(folder_path)
-
+    os.remove(csv_file_path)
 
 # In[ ]:
-start_time = time.time()
 
-check_vocabulary()
+# [Description]: To check the vocabulary for all the HF dataframe files in a folder.
 
-elapsed_time = time.time() - start_time
-print(f"Execution time: {elapsed_time} seconds")
+# [Desclaimer]: When a new data release occurs and the relevancy (indicated by 'Obligation') of a column in the HF data structure is updated, ensure that you place the data structure files with the updated column relevancy into separate folders before running the code!!
+
+# Parallel processing
+if __name__ == "__main__":
+    # Get user input for the folder path just once
+    folder_path = input("Please enter the file directory for vocabulary check: ")
+    convert2UTF8csv(folder_path)
+
+    csv_files = glob.glob(os.path.join(folder_path, '*.csv'))   
+
+    num_workers = 6
+    start_time = time.time()
+
+    # Using multiprocessing pool to parallelize the task
+    pool = multiprocessing.Pool(num_workers)
+    
+    # Distribute the folder paths to workers using starmap (folder_paths is passed as a list of arguments)
+    pool.map(check_vocabulary, csv_files)  # map used since only one argument is needed
+    
+    pool.close()
+    pool.join()
+
+    print(f"Processing completed in {time.time() - start_time} seconds.")
 
