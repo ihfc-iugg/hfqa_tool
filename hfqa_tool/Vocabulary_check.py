@@ -27,6 +27,11 @@ import time
 import re
 import multiprocessing
 from tqdm import tqdm
+from hfqa_tool.utils.utils import (
+    readable,
+    remove_rows,
+    change_type
+)
 
 #get_ipython().run_cell_magic('time', '', 'import pandas as pd\nimport numpy as np\nimport math\nfrom datetime import datetime\nimport openpyxl\nimport warnings\nimport glob\nimport os\nimport re\n')
 
@@ -34,62 +39,6 @@ from tqdm import tqdm
 
 
 warnings.filterwarnings("ignore", category=UserWarning, module='openpyxl')
-
-
-# # 2. Preparing dataframes
-
-# ## 2.1. Convert to .csv utf-8 format
-
-#     [Description]: Convert all the Heatflow database files within a folder in the usual Excel sheet format to .csv format. Which is easily compatible for the functions mentioned below.
-
-# In[3]:
-
-
-def convert2UTF8csv(folder_path):    
-    excel_files = glob.glob(os.path.join(folder_path, '*.xlsx'))
-
-    for excel_file_path in excel_files:
-        if excel_file_path.endswith('_vocab_check.xlsx') or excel_file_path.endswith('_scores_result.xlsx'):
-            continue
-
-        try:
-            excel_file = pd.ExcelFile(excel_file_path, engine='openpyxl')
-            
-            data_list_sheet = excel_file.parse('data list')
-            
-            output_csv_file = os.path.splitext(excel_file_path)[0] + '.csv'
-            
-            data_list_sheet.to_csv(output_csv_file, index=False, encoding='utf-8')
-            
-            del data_list_sheet
-            del excel_file
-            
-        except ValueError as e:
-            print(f"Error processing {excel_file_path}: {e}")
-        except Exception as e:
-            print(f"An unexpected error occurred while processing {excel_file_path}: {e}")
-
-
-# ## 2.2. Extract 10K entries
-
-#     [Disclaimer]: Only required for very large database with more than 10,000 entry.
-#     
-#     [Description]: To prepare segments of a large Heatflow database file, such as Global Heatflow Database 2024 release. Which has more than 90,000 Heatflow data entries. Each segment/ chunk would have 10,000 entries or rows. The segmentation helps run the program functions faster in generating results output.
-
-# In[4]:
-
-
-def extract10K(df,start):
-    df_first_7_rows = df.head(7)
-    df = remove_rows(df)
-
-    df['ID'] = df['ID'].astype(float)
-    end = start + 10000
-
-    filtered_df = df[(df['ID'] >= start) & (df['ID'] <= end)]
-
-    appended_df = pd.concat([df_first_7_rows, filtered_df], ignore_index=True)
-    appended_df.to_csv(f"chunk{start}.csv")
 
 
 # # 3. Controlled vocabulary
@@ -685,7 +634,7 @@ def check_vocabulary(csv_file_path):
 if __name__ == "__main__":
 
     folder_path = input("Please enter the file directory for vocabulary check: ")
-    convert2UTF8csv(folder_path)
+    readable(folder_path)
 
     csv_files = glob.glob(os.path.join(folder_path, '*.csv'))   
     cpu_cores = os.cpu_count()  # or multiprocessing.cpu_count()
