@@ -85,7 +85,7 @@ def assign_columns():
     return NumC, StrC, DateC
 
 def assign_values():
-    B = ['[drilling]','[drilling-clustering]', '[mining]', '[tunneling]', '[indirect (gtm, cpd, etc.)]'] #, '[gtm]', '[cpd]'
+    B = ['[drilling]','[drilling-clustering]', '[mining]', '[tunneling]', '[indirect (gtm, cpd, etc.)]']
     P = ['[probing (onshore/lake, river, etc.)]', '[probing (offshore/ocean)]', '[probing-clustering]']
     U = ["[other (specify in comments)]","[unspecified]","nan",""];
     return B, P, U
