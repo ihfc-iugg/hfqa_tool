@@ -683,25 +683,22 @@ def check_vocabulary(csv_file_path):
 
 # Parallel processing
 if __name__ == "__main__":
-    # Get user input for the folder path just once
+
     folder_path = input("Please enter the file directory for vocabulary check: ")
     convert2UTF8csv(folder_path)
 
     csv_files = glob.glob(os.path.join(folder_path, '*.csv'))   
-
-    num_workers = 6
+    cpu_cores = os.cpu_count()  # or multiprocessing.cpu_count()
+    num_workers =  max(1, cpu_cores - 2)
     start_time = time.time()
 
-    # Using multiprocessing pool to parallelize the task
     with tqdm(total=len(csv_files)) as pbar:
         pool = multiprocessing.Pool(num_workers)
 
-        # Function to update the progress bar after each file is processed
         def update_progress(result):
             pbar.update()
 
-        # Distribute the folder paths to workers using starmap (folder_paths is passed as a list of arguments)
-        for _ in pool.imap(check_vocabulary, csv_files): # map used since only one argument is needed
+        for _ in pool.imap(check_vocabulary, csv_files):
             update_progress(None)  
 
         pool.close()

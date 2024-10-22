@@ -967,8 +967,8 @@ if __name__ == "__main__":
     convert2UTF8csv(folder_path)
 
     csv_files = glob.glob(os.path.join(folder_path, '*.csv'))   
-
-    num_workers = 6
+    cpu_cores = os.cpu_count()  # or multiprocessing.cpu_count()
+    num_workers =  max(1, cpu_cores - 2)
     start_time = time.time()
 
     # Using multiprocessing pool to parallelize the task
