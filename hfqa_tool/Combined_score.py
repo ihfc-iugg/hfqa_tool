@@ -20,6 +20,7 @@ import os
 import warnings
 import time
 import multiprocessing
+from tqdm import tqdm
 
 #get_ipython().run_cell_magic('time', '', 'import pandas as pd\nimport numpy as np\nimport math\nfrom datetime import datetime\nimport glob\nimport os\nimport warnings\n')
 
@@ -948,7 +949,9 @@ def quality_score(csv_file_path):
     
     df_result.to_excel(output_excel_file, index=False)
     
-    print(f"Result exported. Excel file saved as: {output_excel_file}")
+    # Get the string after the last forward or backward slash
+    filename = os.path.basename(output_excel_file)
+    print(f"Result exported: {filename}")
 
     os.remove(csv_file_path)
 
@@ -960,7 +963,7 @@ def quality_score(csv_file_path):
 # Parallel processing
 if __name__ == "__main__":
     # Get user input for the folder path just once
-    folder_path = input("Please enter the file directory for vocabulary check: ")
+    folder_path = input("Please enter the file directory for quality score: ")
     convert2UTF8csv(folder_path)
 
     csv_files = glob.glob(os.path.join(folder_path, '*.csv'))   
@@ -969,13 +972,19 @@ if __name__ == "__main__":
     start_time = time.time()
 
     # Using multiprocessing pool to parallelize the task
-    pool = multiprocessing.Pool(num_workers)
-    
-    # Distribute the folder paths to workers using starmap (folder_paths is passed as a list of arguments)
-    pool.map(quality_score, csv_files)  # map used since only one argument is needed
-    
-    pool.close()
-    pool.join()
+    with tqdm(total=len(csv_files)) as pbar:
+        pool = multiprocessing.Pool(num_workers)
+
+        # Function to update the progress bar after each file is processed
+        def update_progress():
+            pbar.update()
+
+        # Distribute the folder paths to workers using starmap (folder_paths is passed as a list of arguments)
+        for _ in pool.imap(quality_score, csv_files): # map used since only one argument is needed
+            update_progress() 
+             
+        pool.close()
+        pool.join()
 
     print(f"Processing completed in {time.time() - start_time} seconds.")
 
