@@ -908,20 +908,17 @@ if __name__ == "__main__":
     readable(folder_path)
 
     csv_files = glob.glob(os.path.join(folder_path, '*.csv'))   
-    cpu_cores = os.cpu_count()  # or multiprocessing.cpu_count()
+    cpu_cores = os.cpu_count()
     num_workers =  max(1, cpu_cores - 2)
     start_time = time.time()
 
-    # Using multiprocessing pool to parallelize the task
     with tqdm(total=len(csv_files)) as pbar:
         pool = multiprocessing.Pool(num_workers)
 
-        # Function to update the progress bar after each file is processed
         def update_progress():
             pbar.update()
 
-        # Distribute the folder paths to workers using starmap (folder_paths is passed as a list of arguments)
-        for _ in pool.imap(quality_score, csv_files): # map used since only one argument is needed
+        for _ in pool.imap(quality_score, csv_files):
             update_progress() 
              
         pool.close()

@@ -1,3 +1,17 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+#     Author: Saman Firdaus Chishti   |   chishti@gfz-potsdam.de
+# 
+#     Start date: 22-10-2024
+# 
+#     
+# **Description:** Wrapper functions for scripts Vocabulary_check.py and Combined_score.py
+
+# # 1. Importing libraries
+
+# In[1]:
+
 import glob
 import os
 import pandas as pd
@@ -82,15 +96,14 @@ def assign_values():
 
 
 def safe_float_conversion(r):
-    r = r.strip()  # Remove any leading or trailing whitespace    
+    r = r.strip() 
     if r == '0':
         return 0.0    
     try:
-        # Check if the first character is a minus sign
         if r[0] == '-':
-            return -float(r[1:])  # Convert the substring starting from the second character to float and make it negative
+            return -float(r[1:])
         else:
-            return float(r)  # Convert the whole string to float
+            return float(r)
     except ValueError:
         return None
 
