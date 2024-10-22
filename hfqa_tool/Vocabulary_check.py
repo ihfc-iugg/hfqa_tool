@@ -29,8 +29,10 @@ import multiprocessing
 from tqdm import tqdm
 from hfqa_tool.utils.utils import (
     readable,
-    remove_rows,
-    change_type
+    remove_head,
+    assign_columns,
+    assign_values,
+    safe_float_conversion
 )
 
 #get_ipython().run_cell_magic('time', '', 'import pandas as pd\nimport numpy as np\nimport math\nfrom datetime import datetime\nimport openpyxl\nimport warnings\nimport glob\nimport os\nimport re\n')
@@ -47,9 +49,7 @@ warnings.filterwarnings("ignore", category=UserWarning, module='openpyxl')
 # In[5]:
 
 
-NumC = ['P1','P2','P4','P5','P6','P10','P11','C1','C4','C5','C6','C22','C23','C24','C27','C28','C29','C30','C33','C34','C37','C39','C40','C47']
-StrC = ['P7','P9','P12','P13','C3','C11','C12','C13','C14','C15','C17','C18','C19','C21','C31','C32','C35','C36','C41','C42','C43','C44','C45','C46','C48']
-DateC = ['C38']
+NumC, StrC, DateC = assign_columns()
 
 
 # ## 3.2. Numeric value sets
@@ -93,10 +93,7 @@ number = 0
 
 # In[10]:
 
-
-B = ["[Drilling]","[Drilling-Clustering]","[Mining]","[Tunneling]","[GTM]","[Indirect (GTM, CPD, etc.)]"]
-P = ["[Probing (onshore/lake, river, etc.)]","[Probing (offshore/ocean)]","[Probing-Clustering]"]
-U = ["[Other (specify in comments)]","[unspecified]","nan",""];
+B, P, U = assign_values()
 sP7 = ["[Onshore (continental)]","[Onshore (lake, river, etc.)]","[Offshore (continental)]","[Offshore (marine)]","[unspecified]"];
 sP9=sC9 = ["[Yes]","[No]","[Unspecified]"];
 sP12 = ["[Drilling]","[Mining]","[Tunneling]","[GTM]","[Indirect (GTM, CPD, etc.)]","[Probing (onshore/lake, river, etc.)]","[Probing (offshore/ocean)]","[Drilling-Clustering]","[Probing-Clustering]","[Other (specify in comments)]","[unspecified]"];
@@ -118,16 +115,6 @@ sC45 = ["[Unrecorded ambient pT conditions]","[Recorded ambient pT conditions]",
 sC46 = ["[T - Birch and Clark (1940)]","[T - Tikhomirov (1968)]","[T - Kutas & Gordienko (1971)]","[T - Anand et al. (1973)]","[T - Haenel & Zoth (1973)]","[T - Blesch et al. (1983)]","[T - Sekiguchi (1984)]","[T - Chapman et al. (1984)]","[T - Zoth & Haenel (1988)]","[T - Somerton (1992)]","[T - Sass et al. (1992)]","[T - Funnell et al. (1996)]","[T - Kukkonen et al. (1999)]","[T - Seipold (2001)]","[T - Vosteen & Schellschmidt (2003)]","[T - Sun et al. (2017)]","[T - Miranda et al. (2018)]","[T - Ratcliffe (1960)]","[p - Bridgman (1924)]","[p - Sibbitt (1975)]","[p - Kukkonen et al. (1999)]","[p - Seipold (2001)]","[p - Durutürk et al. (2002)]","[p - Demirci et al. (2004)]","[p - Görgülü et al. (2008)]","[p - Fuchs & Förster (2014)]","[pT - Ratcliffe (1960)]","[pT - Buntebarth (1991)]","[pT - Chapman & Furlong (1992)]","[pT - Emirov et al. (1997)]","[pT - Abdulagatov et al. (2006)]","[pT - Emirov & Ramazanova (2007)]","[pT - Abdulagatova et al. (2009)]","[pT - Ramazanova & Emirov (2010)]","[pT - Ramazanova & Emirov (2012)]","[pT - Emirov et al. (2017)]","[pT - Hyndman et al. (1974)]","[Site-specific experimental relationships]","[Other (specify in comments)]","[unspecified]"];
 #sC48 = ["[Random or periodic depth sampling (number)]","[Characterize formation conductivities]","[Well log interpretation]","[Computation from probe sensing]","[Other]","[unspecified]"];
 sC48 = [f"[Random or periodic depth sampling ({number})]","[Characterize formation conductivities]","[Well log interpretation]","[Computation from probe sensing]","[Other]","[unspecified]"];
-
-
-#     [Description]: To avoid case-sensitivity issues in the controlled vocabulary
-
-# In[11]:
-
-
-B = [item.lower() for item in B]
-P = [item.lower() for item in P]
-U = [item.lower() for item in U]
 
 
 #     [Description]: To store the controlled vocabulary in a dataframe structure
@@ -170,44 +157,11 @@ for col in tsdf.columns:
 tsdf
 
 
-# # 4. Remove extra rows
-
-#     [Description]: To perform computations on the entered HF entries only and skip the column labels. There are two conditions: firstly, when the first cell of the dataframe has the column label 'Obligation', the top 8 rows are considered description. Secondly, when the first cell has the column label 'Short Name', the top 2 rows are considered description. The function 'remove_rows()' below switches between these two conditions and removes the description to prepare the dataframe for operability with other functions.
-
-# In[16]:
-
-
-def remove_rows(df):
-    if df.at[0,'ID'] == 'Obligation':
-        df_copy = df
-        top_rows = df_copy.index[0:7]
-        df_copy = df_copy.drop(df_copy.index[0:7])
-
-        new_index_values = range(1, 1+len(df_copy))
-        df_copy.index = new_index_values
-        #flag = 6
-        return df_copy
-    elif df.at[0,'ID'] == 'Short Name':
-        df_copy = df
-        top_rows = df_copy.index[0:1]
-        df_copy = df_copy.drop(df_copy.index[0:1])
-
-        new_index_values = range(1, 1+len(df_copy))
-        df_copy.index = new_index_values
-        #flag = 1
-        return df_copy
-    else:
-        return df
-
-
 # # 5. Data type handling
 
 # ## 5.1. Assigning data types to specific columns
 
 #     [Description]: Convert all the columns to string data type. To resolve multiple values in a categorical field for an entry
-
-# In[17]:
-
 
 def change_type(df):
     df[NumC] = df[NumC].astype(str)
@@ -215,24 +169,6 @@ def change_type(df):
     df[DateC] = df[DateC].astype(str)   
     return df
 
-
-# ## 5.2. Safe float conversion 
-
-# In[18]:
-
-
-def safe_float_conversion(r):
-    r = r.strip()  # Remove any leading or trailing whitespace    
-    if r == '0':
-        return 0.0    
-    try:
-        # Check if the first character is a minus sign
-        if r[0] == '-':
-            return -float(r[1:])  # Convert the substring starting from the second character to float and make it negative
-        else:
-            return float(r)  # Convert the whole string to float
-    except ValueError:
-        return None
 
 
 # # 6. Converting string values to lower case
@@ -574,7 +510,7 @@ def reorder_errors(error_str):
 
 def Complete_check(df):
     m_dict, domain = obligation(df)
-    result = vocabcheck(toLower(change_type(remove_rows(df))), m_dict, domain)
+    result = vocabcheck(toLower(change_type(remove_head(df))), m_dict, domain)
     result['Error'] = result['Error'].apply(reorder_errors)
     return result
 
