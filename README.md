@@ -47,6 +47,8 @@ datetime
 glob
 os
 warnings
+multiprocessing
+tqdm
 
 # 'glob', 'os', 'warnings', 'datetime', 're' and 'math' are part of the standard library
 ```
@@ -115,7 +117,7 @@ git push
 ### Directly
 - Download jupyter notebook or python version of the code. Run on related environment.
 - Run all sections of the code. Descriptions and guidelines are provided with the code.
-- When prompted with `Please enter the file directory:`, provide the directory/location of your Heatflow data files. This can be done in the last section (*12. hfqa_tool function*) of the code, both in [Vocabulary_check](https://github.com/sfchishti/hfqa_tool/blob/main/notebooks/Vocabulary_check.ipynb), and [Combined_score](https://github.com/sfchishti/hfqa_tool/blob/main/notebooks/Combined_score.ipynb) code.
+- When prompted with `Please enter the file directory:`, provide the directory/location of your Heatflow data files. This can be done in the last section (*10. hfqa_tool function*) of the code, both in [Vocabulary_check](https://github.com/sfchishti/hfqa_tool/blob/main/notebooks/Vocabulary_check.ipynb), and [Combined_score](https://github.com/sfchishti/hfqa_tool/blob/main/notebooks/Combined_score.ipynb) code.
 - If running on Linux or Mac OS, use forward slashes /. On Windows, backward slashes \ will work fine when assigning your directory.
 - Get results in the same folder :)
 ### Cloning .git
