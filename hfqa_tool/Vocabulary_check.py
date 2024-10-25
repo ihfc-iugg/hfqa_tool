@@ -554,7 +554,6 @@ def check_vocabulary(csv_file_path):
     else:
         output_excel_file = os.path.splitext(csv_file_path)[0] + '_vocab_check.xlsx'        
         df_result.to_excel(output_excel_file, index=False)
-        # Get the string after the last forward or backward slash
         filename = os.path.basename(output_excel_file)
         print(f"Result exported: {filename}")
 
