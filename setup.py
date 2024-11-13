@@ -9,7 +9,7 @@ setup(
         'pandas>=1.0.0',
         'openpyxl>=3.0.0',
         'tqdm>=4.0.0'
-        # 'glob', 'os', 'datetime', 'warnings', 're' and 'math' are part of the standard library
+        # 'glob', 'os', 'datetime', 'warnings', 're', 'math' and 'multiprocessing' are part of the standard library
     ],
     author="Saman Firdaus Chishti",
     author_email="chishti@gfz-potsdam.de",
