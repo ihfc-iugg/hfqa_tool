@@ -55,13 +55,8 @@ tqdm
 
 # Installation Guide:
 
-### Install from PyPi
-```
-#pip3 install hfqa_tool
-pip3 install git+https://github.com/sfchishti/hfqa_tool.git
-```
-
 ### Install from Github
+In shell, cmd, VSCode or any other console of your liking enter:
 ```
 git clone https://github.com/sfchishti/hfqa_tool.git
 ```
@@ -74,6 +69,11 @@ python setup.py install --user
 - `sudo`, if required
 - `python3 setup.py build_ext --inplace  # for cython`, if you want to test in-place, first execute this
 
+### Install from PyPi
+```
+#pip3 install hfqa_tool
+pip3 install git+https://github.com/sfchishti/hfqa_tool.git
+```
 
 # Running code
 ## Option 1: 
