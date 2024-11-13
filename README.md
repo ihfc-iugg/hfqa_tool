@@ -72,7 +72,7 @@ python setup.py install --user
 ### Cloning .git with Multiprocessing
 - Follow steps from [Install from Github](#install-from-github).
 - Run `python` in shell
-- ```
+   ```
   from hfqa_tool import main
   main()
   ```
