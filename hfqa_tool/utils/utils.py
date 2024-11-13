@@ -49,7 +49,7 @@ def readable(folder_path):
             print(f"An unexpected error occurred while processing {excel_file_path}: {e}")
 
 
-# # 4. Remove extra rows
+# # 1.2. Remove extra rows
 
 #     [Description]: To perform computations on the entered HF entries only and skip the column labels. There are two conditions: firstly, when the first cell of the dataframe has the column label 'Obligation', the top 8 rows are considered description. Secondly, when the first cell has the column label 'Short Name', the top 2 rows are considered description. The function 'remove_rows()' below switches between these two conditions and removes the description to prepare the dataframe for operability with other functions.
 
@@ -90,7 +90,7 @@ def assign_values():
     U = ["[other (specify in comments)]","[unspecified]","nan",""];
     return B, P, U
 
-# ## 5.2. Safe float conversion 
+# ## 2.1. Safe float conversion 
 
 # In[18]:
 
