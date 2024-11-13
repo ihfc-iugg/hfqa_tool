@@ -138,7 +138,7 @@ import hfqa_tool
     
 # Caution
 - The worksheet of Heat flow data must be named "data list", to execute conversion of the data set in machine readable format (here, *.csv*). Else the function `convert2UTF8csv(folder_path)` will not work.
-![data_list Image](Graphics/data_list.png)
+![data_list Image](notebooks/Graphics/data_list.png)
 - Indexing should be in the first column of the datasheet.
 - When a new data release occurs and the relevancy (indicated by *'Obligation'*) of a column in the HF data structure is updated, make sure to place the data structure files with the updated column relevancy into separate folders before running the code.
 
@@ -148,5 +148,5 @@ import hfqa_tool
 This work is licensed under multiple licenses:
 
 
-- The source codes are licensed under **MIT**.
-- The documentation and the images are licensed under **CC-BY-4.0**.
+- The source codes are licensed under **[MIT](license/MIT.txt)**.
+- The documentation and the images are licensed under **[CC-BY-4.0](license/CC-BY-4.0.txt)**.
