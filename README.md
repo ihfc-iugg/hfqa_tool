@@ -67,12 +67,6 @@ python setup.py install --user
 - `sudo`, if required
 - `python3 setup.py build_ext --inplace  # for cython`, if you want to test in-place, first execute this
 
-### Install from PyPi
-```
-#pip3 install hfqa_tool
-pip3 install git+https://github.com/sfchishti/hfqa_tool.git
-```
-
 # Running code
 ## Option 1: 
 ### Cloning .git with Multiprocessing
@@ -92,14 +86,6 @@ pip3 install git+https://github.com/sfchishti/hfqa_tool.git
 - Run all sections of the code of notebooks on conda environment. Descriptions and guidelines are provided with the code.
 - When prompted with `Please enter the file directory:`, provide the directory/location of your Heatflow data files. This can be done in the last section (*10. hfqa_tool function*) of the code, both in [Vocabulary_check](https://github.com/sfchishti/hfqa_tool/blob/main/notebooks/Vocabulary_check.ipynb), and [Combined_score](https://github.com/sfchishti/hfqa_tool/blob/main/notebooks/Combined_score.ipynb) code.
 - If running on Linux or Mac OS, use forward slashes /. On Windows, backward slashes \ will work fine when assigning your directory.
-- Get results in the same folder :)
-
-### PyPi
-- In Python terminal run code from [Install from PyPi](#install-from-pypi)
-```
-import hfqa_tool
-```
--  When prompted with `Please enter the file directory:`, provide the directory/location of your Heatflow data files. If running on Linux or Mac OS, use forward slashes /. On Windows, backward slashes \ will work fine when assigning your directory.
 - Get results in the same folder :)
 
 # Setting up the development environment:
