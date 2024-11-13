@@ -20,9 +20,6 @@ It's a recommended prerequisite before calculating 'Quality Scores' for a given 
 - `quality_scores()`: This code has been developed to assess the quality of the Heatflow database in terms of U-score (Uncertainty quantification), M-Score (Methodological quality), and P-Flags (Perturbation effects) adhering to the data structure described in the aforementioned scientific paper.
 
 # Documentation
-The official documentation with usage is at: 
-ReadTheDocs: 
-
 The list of Co-Authors involved in developing this toolbox are mentioned in [AUTHORs.md](https://github.com/sfchishti/hfqa_tool/blob/main/AUTHORs.md)
 
 # System Requirements
