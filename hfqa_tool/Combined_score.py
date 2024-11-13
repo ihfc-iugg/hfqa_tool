@@ -901,34 +901,6 @@ def folder_result(csv_file_path):
 # # 12. hfqa_tool function
 
 #      [Description]: To calculate Quality score for all the HF dataframe files in a folder.
-# def quality_score():
-#     # Parallel processing
-#     #if __name__ == "__main__":
-#     # Get user input for the folder path just once
-#     folder_path = input("Please enter the file directory for quality score: ")
-#     readable(folder_path)
-
-#     csv_files = glob.glob(os.path.join(folder_path, '*.csv'))   
-#     cpu_cores = os.cpu_count()
-#     num_workers =  max(1, cpu_cores - 2)
-#     start_time = time.time()
-
-#     with tqdm(total=len(csv_files)) as pbar:
-#         pool = multiprocessing.Pool(num_workers)
-
-#         def update_progress():
-#             pbar.update()
-
-#         for _ in pool.imap(folder_result, csv_files):
-#             update_progress() 
-            
-#         pool.close()
-#         pool.join()
-
-#     print(f"Processing completed in {time.time() - start_time} seconds.")
-
-# if __name__ == "__main__":
-#     quality_score()
 
 def quality_score(folder_path):
     readable(folder_path)
@@ -951,3 +923,7 @@ def quality_score(folder_path):
         pool.join()
 
     print(f"Processing completed in {time.time() - start_time} seconds.")
+
+if __name__ == "__main__":
+    folder_path = input("Please enter the file directory for quality score: ")
+    quality_score()

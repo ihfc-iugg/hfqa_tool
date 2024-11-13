@@ -564,34 +564,6 @@ def folder_result(csv_file_path):
 # [Description]: To check the vocabulary for all the HF dataframe files in a folder.
 
 # [Desclaimer]: When a new data release occurs and the relevancy (indicated by 'Obligation') of a column in the HF data structure is updated, ensure that you place the data structure files with the updated column relevancy into separate folders before running the code!!
-# def check_vocabulary():
-#     # Parallel processing
-#     # if __name__ == "__main__":
-
-#     folder_path = input("Please enter the file directory for vocabulary check: ")
-#     readable(folder_path)
-
-#     csv_files = glob.glob(os.path.join(folder_path, '*.csv'))   
-#     cpu_cores = os.cpu_count()  # or multiprocessing.cpu_count()
-#     num_workers =  max(1, cpu_cores - 2)
-#     start_time = time.time()
-
-#     with tqdm(total=len(csv_files)) as pbar:
-#         pool = multiprocessing.Pool(num_workers)
-
-#         def update_progress(result):
-#             pbar.update()
-
-#         for _ in pool.imap(folder_result, csv_files):
-#             update_progress(None)  
-
-#         pool.close()
-#         pool.join()
-
-#     print(f"Processing completed in {time.time() - start_time} seconds.")
-
-# if __name__ == "__main__":
-#     check_vocabulary()
 
 def check_vocabulary(folder_path):
     readable(folder_path)
@@ -614,3 +586,7 @@ def check_vocabulary(folder_path):
         pool.join()
 
     print(f"Processing completed in {time.time() - start_time} seconds.")
+
+if __name__ == "__main__":
+    folder_path = input("Please enter the file directory for vocabulary check: ")
+    check_vocabulary(folder_path)
