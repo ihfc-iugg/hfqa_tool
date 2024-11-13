@@ -25,6 +25,7 @@ The list of Co-Authors involved in developing this toolbox are mentioned in [AUT
 # System Requirements
 ## Hardware requirements
 `hfqa_tool` package requires only a standard computer with enough RAM to support the in-memory operations.
+For multiprocessing you would need more than 2 cores.
 
 ## Software requirements
 ### OS Requirements
