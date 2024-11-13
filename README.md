@@ -123,8 +123,10 @@ git push
 ### Cloning .git with Multiprocessing
 - Follow steps from [Install from Github](#install-from-github).
 - Run `python` in shell
-- `from hfqa_tool import main`
-- `main()`
+- ```
+  from hfqa_tool import main
+  main()
+  ```
 - When prompted with `Please enter the file directory:`, provide the directory/location of your Heatflow data files.
 - If running on Linux or Mac OS, use forward slashes /. On Windows, backward slashes \ will work fine when assigning your directory.
 - Get results in the same folder with execution time displayed :)
