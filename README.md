@@ -4,8 +4,8 @@
 - [Documentation](#documentation)
 - [System Requirements](#system-requirements)
 - [Installation Guide](#installation-guide)
-- [Setting up the development environment](#setting-up-the-development-environment)
 - [Running code](#running-code)
+- [Setting up the development environment](#setting-up-the-development-environment)
 - [Precaution](#precaution)
 - [License](#license)
 - [Issues](ISSUES.md)
@@ -74,6 +74,36 @@ python setup.py install --user
 - `sudo`, if required
 - `python3 setup.py build_ext --inplace  # for cython`, if you want to test in-place, first execute this
 
+
+# Running code
+## Option 1: 
+### Cloning .git with Multiprocessing
+- Follow steps from [Install from Github](#install-from-github).
+- Run `python` in shell
+- ```
+  from hfqa_tool import main
+  main()
+  ```
+- When prompted with `Please enter the file directory:`, provide the directory/location of your Heatflow data files.
+- If running on Linux or Mac OS, use forward slashes /. On Windows, backward slashes \ will work fine when assigning your directory.
+- Get results in the same folder with execution time displayed :)
+
+## Option 2: 
+### Directly without Multiprocessing
+- Download `hfqa_tool` repository
+- Run all sections of the code of notebooks on conda environment. Descriptions and guidelines are provided with the code.
+- When prompted with `Please enter the file directory:`, provide the directory/location of your Heatflow data files. This can be done in the last section (*10. hfqa_tool function*) of the code, both in [Vocabulary_check](https://github.com/sfchishti/hfqa_tool/blob/main/notebooks/Vocabulary_check.ipynb), and [Combined_score](https://github.com/sfchishti/hfqa_tool/blob/main/notebooks/Combined_score.ipynb) code.
+- If running on Linux or Mac OS, use forward slashes /. On Windows, backward slashes \ will work fine when assigning your directory.
+- Get results in the same folder :)
+
+### PyPi
+- In Python terminal run code from [Install from PyPi](#install-from-pypi)
+```
+import hfqa_tool
+```
+-  When prompted with `Please enter the file directory:`, provide the directory/location of your Heatflow data files. If running on Linux or Mac OS, use forward slashes /. On Windows, backward slashes \ will work fine when assigning your directory.
+- Get results in the same folder :)
+
 # Setting up the development environment:
 ### Prerequisites
 
@@ -112,35 +142,6 @@ git config user.email "your_email@example.com"
 git push
 ```
 
-
-# Running code
-## Option 1: 
-### Cloning .git with Multiprocessing
-- Follow steps from [Install from Github](#install-from-github).
-- Run `python` in shell
-- ```
-  from hfqa_tool import main
-  main()
-  ```
-- When prompted with `Please enter the file directory:`, provide the directory/location of your Heatflow data files.
-- If running on Linux or Mac OS, use forward slashes /. On Windows, backward slashes \ will work fine when assigning your directory.
-- Get results in the same folder with execution time displayed :)
-
-## Option 2: 
-### Directly without Multiprocessing
-- Download `hfqa_tool` repository
-- Run all sections of the code of notebooks on conda environment. Descriptions and guidelines are provided with the code.
-- When prompted with `Please enter the file directory:`, provide the directory/location of your Heatflow data files. This can be done in the last section (*10. hfqa_tool function*) of the code, both in [Vocabulary_check](https://github.com/sfchishti/hfqa_tool/blob/main/notebooks/Vocabulary_check.ipynb), and [Combined_score](https://github.com/sfchishti/hfqa_tool/blob/main/notebooks/Combined_score.ipynb) code.
-- If running on Linux or Mac OS, use forward slashes /. On Windows, backward slashes \ will work fine when assigning your directory.
-- Get results in the same folder :)
-
-### PyPi
-- In Python terminal run code from [Install from PyPi](#install-from-pypi)
-```
-import hfqa_tool
-```
--  When prompted with `Please enter the file directory:`, provide the directory/location of your Heatflow data files. If running on Linux or Mac OS, use forward slashes /. On Windows, backward slashes \ will work fine when assigning your directory.
-- Get results in the same folder :)
     
 # Precaution
 - The worksheet of Heat flow data must be named "data list", to execute conversion of the data set in machine readable format (here, *.csv*). Else the function `convert2UTF8csv(folder_path)` will not work.
