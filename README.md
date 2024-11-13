@@ -114,17 +114,17 @@ git push
 
 
 # Running code
-### Directly
-- Download jupyter notebook or python version of the code. Run on related environment.
+### Directly without Multiprocessing
+- Download jupyter notebook or python version of the code. Run on conda environment.
 - Run all sections of the code. Descriptions and guidelines are provided with the code.
 - When prompted with `Please enter the file directory:`, provide the directory/location of your Heatflow data files. This can be done in the last section (*10. hfqa_tool function*) of the code, both in [Vocabulary_check](https://github.com/sfchishti/hfqa_tool/blob/main/notebooks/Vocabulary_check.ipynb), and [Combined_score](https://github.com/sfchishti/hfqa_tool/blob/main/notebooks/Combined_score.ipynb) code.
 - If running on Linux or Mac OS, use forward slashes /. On Windows, backward slashes \ will work fine when assigning your directory.
 - Get results in the same folder :)
-### Cloning .git
+### Cloning .git with Multiprocessing
 - Follow steps from [Install from Github](#install-from-github).
-- `conda activate --myenv` #replace with your own environment name, with all installed [Python Libraries](#python-dependencies).
 - Run `python` in shell
-- `import hfqa_tool`
+- `from hfqa_tool import main`
+- `main()`
 - When prompted with `Please enter the file directory:`, provide the directory/location of your Heatflow data files.
 - If running on Linux or Mac OS, use forward slashes /. On Windows, backward slashes \ will work fine when assigning your directory.
 - Get results in the same folder with execution time displayed :)
