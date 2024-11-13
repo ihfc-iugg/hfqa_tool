@@ -148,5 +148,5 @@ import hfqa_tool
 This work is licensed under multiple licenses:
 
 
-- The source codes are licensed under **MIT**.
+- The source codes are licensed under **[MIT](license/CC-BY-4.0.txt)**.
 - The documentation and the images are licensed under **CC-BY-4.0**.
