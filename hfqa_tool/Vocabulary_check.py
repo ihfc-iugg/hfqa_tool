@@ -18,15 +18,22 @@
 # In[1]:
 
 import pandas as pd
-import numpy as np
 import math
 from datetime import datetime
 import glob
 import os
 import warnings
 import time
-import openpyxl
 import re
+import multiprocessing
+from tqdm import tqdm
+from hfqa_tool.utils.utils import (
+    readable,
+    remove_head,
+    assign_columns,
+    assign_values,
+    safe_float_conversion
+)
 
 #get_ipython().run_cell_magic('time', '', 'import pandas as pd\nimport numpy as np\nimport math\nfrom datetime import datetime\nimport openpyxl\nimport warnings\nimport glob\nimport os\nimport re\n')
 
@@ -36,71 +43,13 @@ import re
 warnings.filterwarnings("ignore", category=UserWarning, module='openpyxl')
 
 
-# # 2. Preparing dataframes
-
-# ## 2.1. Convert to .csv utf-8 format
-
-#     [Description]: Convert all the Heatflow database files within a folder in the usual Excel sheet format to .csv format. Which is easily compatible for the functions mentioned below.
-
-# In[3]:
-
-
-def convert2UTF8csv(folder_path):    
-    excel_files = glob.glob(os.path.join(folder_path, '*.xlsx'))
-
-    for excel_file_path in excel_files:
-        if excel_file_path.endswith('_vocab_check.xlsx') or excel_file_path.endswith('_scores_result.xlsx'):
-            continue
-
-        try:
-            excel_file = pd.ExcelFile(excel_file_path, engine='openpyxl')
-            
-            data_list_sheet = excel_file.parse('data list')
-            
-            output_csv_file = os.path.splitext(excel_file_path)[0] + '.csv'
-            
-            data_list_sheet.to_csv(output_csv_file, index=False, encoding='utf-8')
-            
-            del data_list_sheet
-            del excel_file
-            
-        except ValueError as e:
-            print(f"Error processing {excel_file_path}: {e}")
-        except Exception as e:
-            print(f"An unexpected error occurred while processing {excel_file_path}: {e}")
-
-
-# ## 2.2. Extract 10K entries
-
-#     [Disclaimer]: Only required for very large database with more than 10,000 entry.
-#     
-#     [Description]: To prepare segments of a large Heatflow database file, such as Global Heatflow Database 2024 release. Which has more than 90,000 Heatflow data entries. Each segment/ chunk would have 10,000 entries or rows. The segmentation helps run the program functions faster in generating results output.
-
-# In[4]:
-
-
-def extract10K(df,start):
-    df_first_7_rows = df.head(7)
-    df = remove_rows(df)
-
-    df['ID'] = df['ID'].astype(float)
-    end = start + 10000
-
-    filtered_df = df[(df['ID'] >= start) & (df['ID'] <= end)]
-
-    appended_df = pd.concat([df_first_7_rows, filtered_df], ignore_index=True)
-    appended_df.to_csv(f"chunk{start}.csv")
-
-
 # # 3. Controlled vocabulary
 # ## 3.1. Assigning columns with similar data types to specific list
 
 # In[5]:
 
 
-NumC = ['P1','P2','P4','P5','P6','P10','P11','C1','C4','C5','C6','C22','C23','C24','C27','C28','C29','C30','C33','C34','C37','C39','C40','C47']
-StrC = ['P7','P9','P12','P13','C3','C11','C12','C13','C14','C15','C17','C18','C19','C21','C31','C32','C35','C36','C41','C42','C43','C44','C45','C46','C48']
-DateC = ['C38']
+NumC, StrC, DateC = assign_columns()
 
 
 # ## 3.2. Numeric value sets
@@ -144,10 +93,7 @@ number = 0
 
 # In[10]:
 
-
-B = ["[Drilling]","[Drilling-Clustering]","[Mining]","[Tunneling]","[GTM]","[Indirect (GTM, CPD, etc.)]"]
-P = ["[Probing (onshore/lake, river, etc.)]","[Probing (offshore/ocean)]","[Probing-Clustering]"]
-U = ["[Other (specify in comments)]","[unspecified]","nan",""];
+B, P, U = assign_values()
 sP7 = ["[Onshore (continental)]","[Onshore (lake, river, etc.)]","[Offshore (continental)]","[Offshore (marine)]","[unspecified]"];
 sP9=sC9 = ["[Yes]","[No]","[Unspecified]"];
 sP12 = ["[Drilling]","[Mining]","[Tunneling]","[GTM]","[Indirect (GTM, CPD, etc.)]","[Probing (onshore/lake, river, etc.)]","[Probing (offshore/ocean)]","[Drilling-Clustering]","[Probing-Clustering]","[Other (specify in comments)]","[unspecified]"];
@@ -169,16 +115,6 @@ sC45 = ["[Unrecorded ambient pT conditions]","[Recorded ambient pT conditions]",
 sC46 = ["[T - Birch and Clark (1940)]","[T - Tikhomirov (1968)]","[T - Kutas & Gordienko (1971)]","[T - Anand et al. (1973)]","[T - Haenel & Zoth (1973)]","[T - Blesch et al. (1983)]","[T - Sekiguchi (1984)]","[T - Chapman et al. (1984)]","[T - Zoth & Haenel (1988)]","[T - Somerton (1992)]","[T - Sass et al. (1992)]","[T - Funnell et al. (1996)]","[T - Kukkonen et al. (1999)]","[T - Seipold (2001)]","[T - Vosteen & Schellschmidt (2003)]","[T - Sun et al. (2017)]","[T - Miranda et al. (2018)]","[T - Ratcliffe (1960)]","[p - Bridgman (1924)]","[p - Sibbitt (1975)]","[p - Kukkonen et al. (1999)]","[p - Seipold (2001)]","[p - Durutürk et al. (2002)]","[p - Demirci et al. (2004)]","[p - Görgülü et al. (2008)]","[p - Fuchs & Förster (2014)]","[pT - Ratcliffe (1960)]","[pT - Buntebarth (1991)]","[pT - Chapman & Furlong (1992)]","[pT - Emirov et al. (1997)]","[pT - Abdulagatov et al. (2006)]","[pT - Emirov & Ramazanova (2007)]","[pT - Abdulagatova et al. (2009)]","[pT - Ramazanova & Emirov (2010)]","[pT - Ramazanova & Emirov (2012)]","[pT - Emirov et al. (2017)]","[pT - Hyndman et al. (1974)]","[Site-specific experimental relationships]","[Other (specify in comments)]","[unspecified]"];
 #sC48 = ["[Random or periodic depth sampling (number)]","[Characterize formation conductivities]","[Well log interpretation]","[Computation from probe sensing]","[Other]","[unspecified]"];
 sC48 = [f"[Random or periodic depth sampling ({number})]","[Characterize formation conductivities]","[Well log interpretation]","[Computation from probe sensing]","[Other]","[unspecified]"];
-
-
-#     [Description]: To avoid case-sensitivity issues in the controlled vocabulary
-
-# In[11]:
-
-
-B = [item.lower() for item in B]
-P = [item.lower() for item in P]
-U = [item.lower() for item in U]
 
 
 #     [Description]: To store the controlled vocabulary in a dataframe structure
@@ -221,44 +157,11 @@ for col in tsdf.columns:
 tsdf
 
 
-# # 4. Remove extra rows
-
-#     [Description]: To perform computations on the entered HF entries only and skip the column labels. There are two conditions: firstly, when the first cell of the dataframe has the column label 'Obligation', the top 8 rows are considered description. Secondly, when the first cell has the column label 'Short Name', the top 2 rows are considered description. The function 'remove_rows()' below switches between these two conditions and removes the description to prepare the dataframe for operability with other functions.
-
-# In[16]:
-
-
-def remove_rows(df):
-    if df.at[0,'ID'] == 'Obligation':
-        df_copy = df
-        top_rows = df_copy.index[0:7]
-        df_copy = df_copy.drop(df_copy.index[0:7])
-
-        new_index_values = range(1, 1+len(df_copy))
-        df_copy.index = new_index_values
-        #flag = 6
-        return df_copy
-    elif df.at[0,'ID'] == 'Short Name':
-        df_copy = df
-        top_rows = df_copy.index[0:1]
-        df_copy = df_copy.drop(df_copy.index[0:1])
-
-        new_index_values = range(1, 1+len(df_copy))
-        df_copy.index = new_index_values
-        #flag = 1
-        return df_copy
-    else:
-        return df
-
-
 # # 5. Data type handling
 
 # ## 5.1. Assigning data types to specific columns
 
 #     [Description]: Convert all the columns to string data type. To resolve multiple values in a categorical field for an entry
-
-# In[17]:
-
 
 def change_type(df):
     df[NumC] = df[NumC].astype(str)
@@ -266,24 +169,6 @@ def change_type(df):
     df[DateC] = df[DateC].astype(str)   
     return df
 
-
-# ## 5.2. Safe float conversion 
-
-# In[18]:
-
-
-def safe_float_conversion(r):
-    r = r.strip()  # Remove any leading or trailing whitespace    
-    if r == '0':
-        return 0.0    
-    try:
-        # Check if the first character is a minus sign
-        if r[0] == '-':
-            return -float(r[1:])  # Convert the substring starting from the second character to float and make it negative
-        else:
-            return float(r)  # Convert the whole string to float
-    except ValueError:
-        return None
 
 
 # # 6. Converting string values to lower case
@@ -625,7 +510,7 @@ def reorder_errors(error_str):
 
 def Complete_check(df):
     m_dict, domain = obligation(df)
-    result = vocabcheck(toLower(change_type(remove_rows(df))), m_dict, domain)
+    result = vocabcheck(toLower(change_type(remove_head(df))), m_dict, domain)
     result['Error'] = result['Error'].apply(reorder_errors)
     return result
 
@@ -660,46 +545,48 @@ def attachOG(og):
 # In[26]:
 
 
-def folder_result(folder_path):
+def folder_result(csv_file_path):
+    df = pd.read_csv(csv_file_path)
+    df_result = attachOG(df)
 
-    csv_files = glob.glob(os.path.join(folder_path, '*.csv'))    
+    if df_result['Error'].eq('').all():
+        print("There is no error. Data is ready for Quality Check!")
+    else:
+        output_excel_file = os.path.splitext(csv_file_path)[0] + '_vocab_check.xlsx'        
+        df_result.to_excel(output_excel_file, index=False)
+        filename = os.path.basename(output_excel_file)
+        print(f"Result exported: {filename}")
 
-    for csv_file_path in csv_files:
-
-        df = pd.read_csv(csv_file_path)
-        df_result = attachOG(df)
-
-        if df_result['Error'].eq('').all():
-            print("There is no error. Data is ready for Quality Check!")
-        else:
-            output_excel_file = os.path.splitext(csv_file_path)[0] + '_vocab_check.xlsx'        
-            df_result.to_excel(output_excel_file, index=False)
-            print(f"Result exported: {output_excel_file}")
-
-    for csv_file_path in csv_files:
-        os.remove(csv_file_path)
-
-
-# # 12. hfqa_tool function
-
-#      [Description]: To check the vocabulary for all the HF dataframe files in a folder.
-
-#      [Desclaimer]: When a new data release occurs and the relevancy (indicated by 'Obligation') of a column in the HF data structure is updated, ensure that you place the data structure files with the updated column relevancy into separate folders before running the code!!
-
-# In[27]:
-
-
-def check_vocabulary():
-    folder_path = input("Please enter the file directory for vocabulary check: ")
-    convert2UTF8csv(folder_path)
-    folder_result(folder_path)
-
+    os.remove(csv_file_path)
 
 # In[ ]:
-start_time = time.time()
 
-check_vocabulary()
+# [Description]: To check the vocabulary for all the HF dataframe files in a folder.
 
-elapsed_time = time.time() - start_time
-print(f"Execution time: {elapsed_time} seconds")
+# [Desclaimer]: When a new data release occurs and the relevancy (indicated by 'Obligation') of a column in the HF data structure is updated, ensure that you place the data structure files with the updated column relevancy into separate folders before running the code!!
 
+def check_vocabulary(folder_path):
+    readable(folder_path)
+    """Performs vocabulary check for all CSV files in a folder."""
+    csv_files = glob.glob(os.path.join(folder_path, '*.csv'))   
+    cpu_cores = os.cpu_count()
+    num_workers = max(1, cpu_cores - 2)  # Use all cores except for two
+    start_time = time.time()
+
+    with tqdm(total=len(csv_files)) as pbar:
+        pool = multiprocessing.Pool(num_workers)
+
+        def update_progress(result):
+            pbar.update()
+
+        for _ in pool.imap(folder_result, csv_files):
+            update_progress(None)  
+
+        pool.close()
+        pool.join()
+
+    print(f"Processing completed in {time.time() - start_time} seconds.")
+
+if __name__ == "__main__":
+    folder_path = input("Please enter the file directory for vocabulary check: ")
+    check_vocabulary(folder_path)
