@@ -8,7 +8,7 @@
 - [Running code](#running-code)
 - [Caution](#caution)
 - [License](#license)
-- [Issues](https://github.com/https://git-int.gfz-potsdam.de/chishti/heatflow-quality-analysis-code/issues)
+- [Issues](ISSUES.md)
 
 # Overview
 
