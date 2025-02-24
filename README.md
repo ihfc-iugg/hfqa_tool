@@ -56,7 +56,7 @@ tqdm
 ### Install from Github
 In shell, cmd, VSCode or any other console of your liking enter:
 ```
-git clone https://github.com/sfchishti/hfqa_tool.git
+git clone --branch internal https://github.com/sfchishti/hfqa_tool.git
 ```
 ```
 cd hfqa_tool
