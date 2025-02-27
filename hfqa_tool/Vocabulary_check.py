@@ -397,6 +397,8 @@ def vocabcheck(df,m_dict,domain):
                                 
                             elif math.isnan(r):
                                 if (m_dict[c] == 'M') and (df.loc[id, c]) == 'nan':
+                                    if (c == 'C27') and (df.loc[id, 'C29']) != 'nan':
+                                        error_string = ""
                                     if ('B' in domain[c] and (P12 in B)):
                                         error_string = f" {c}:Mandatory entry is empty!,"
                                     elif ('S' in domain[c] and (P12 in P)):                                        
