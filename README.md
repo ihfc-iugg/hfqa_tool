@@ -87,7 +87,7 @@ Make sure you have the following installed:
 Clone the project repository using Git:
 
 ```
-git clone https://github.com/sfchishti/hfqa_tool.git
+git clone --branch update https://github.com/sfchishti/hfqa_tool.git
 cd hfqa_tool
 ```
 
