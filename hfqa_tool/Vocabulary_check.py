@@ -169,6 +169,7 @@ sC45 = ["[Unrecorded ambient pT conditions]","[Recorded ambient pT conditions]",
 sC46 = ["[T - Birch and Clark (1940)]","[T - Tikhomirov (1968)]","[T - Kutas & Gordienko (1971)]","[T - Anand et al. (1973)]","[T - Haenel & Zoth (1973)]","[T - Blesch et al. (1983)]","[T - Sekiguchi (1984)]","[T - Chapman et al. (1984)]","[T - Zoth & Haenel (1988)]","[T - Somerton (1992)]","[T - Sass et al. (1992)]","[T - Funnell et al. (1996)]","[T - Kukkonen et al. (1999)]","[T - Seipold (2001)]","[T - Vosteen & Schellschmidt (2003)]","[T - Sun et al. (2017)]","[T - Miranda et al. (2018)]","[T - Ratcliffe (1960)]","[p - Bridgman (1924)]","[p - Sibbitt (1975)]","[p - Kukkonen et al. (1999)]","[p - Seipold (2001)]","[p - Durutürk et al. (2002)]","[p - Demirci et al. (2004)]","[p - Görgülü et al. (2008)]","[p - Fuchs & Förster (2014)]","[pT - Ratcliffe (1960)]","[pT - Buntebarth (1991)]","[pT - Chapman & Furlong (1992)]","[pT - Emirov et al. (1997)]","[pT - Abdulagatov et al. (2006)]","[pT - Emirov & Ramazanova (2007)]","[pT - Abdulagatova et al. (2009)]","[pT - Ramazanova & Emirov (2010)]","[pT - Ramazanova & Emirov (2012)]","[pT - Emirov et al. (2017)]","[pT - Hyndman et al. (1974)]","[Site-specific experimental relationships]","[Other (specify in comments)]","[unspecified]"];
 #sC48 = ["[Random or periodic depth sampling (number)]","[Characterize formation conductivities]","[Well log interpretation]","[Computation from probe sensing]","[Other]","[unspecified]"];
 sC48 = [f"[Random or periodic depth sampling ({number})]","[Random or periodic depth sampling]","[Characterize formation conductivities]","[Well log interpretation]","[Computation from probe sensing]","[Other]","[unspecified]"];
+check_list = ['[clog]', '[cdts]', '[cbht]', '[crtd]', '[cht-ft]'];
 
 
 #     [Description]: To avoid case-sensitivity issues in the controlled vocabulary
@@ -393,13 +394,29 @@ def vocabcheck(df,m_dict,domain):
                             r = safe_float_conversion(r)
     
                             if  min_value <= r <= max_value:
-                                error_string = ""
+                                if (c == 'C29') and (df.loc[id, 'C27']) != 'nan':                                    
+                                    values_in_c31 = df.loc[id, 'C31'].split(';') if isinstance(df.loc[id, 'C31'], str) else []
+                                    values_in_c32 = df.loc[id, 'C32'].split(';') if isinstance(df.loc[id, 'C32'], str) else []
+                                    if any(value in check_list for value in values_in_c31) or any(value in check_list for value in values_in_c32):
+                                           error_string = ""
+                                    else:
+                                           error_string = f" {c}:Temperature method should be corrected!,"
+                                else:
+                                    error_string = ""
                                 
                             elif math.isnan(r):
                                 if (m_dict[c] == 'M') and (df.loc[id, c]) == 'nan':
-                                    if (c == 'C27') and (df.loc[id, 'C29']) != 'nan':
-                                        error_string = ""
-                                    if ('B' in domain[c] and (P12 in B)):
+                                    if c == 'C27':
+                                        if df.loc[id, 'C29'] == 'nan':
+                                            error_string = f" {c}:Mandatory entry is empty!,"
+                                        else:
+                                            values_in_c31 = df.loc[id, 'C31'].split(';') if isinstance(df.loc[id, 'C31'], str) else []
+                                            values_in_c32 = df.loc[id, 'C32'].split(';') if isinstance(df.loc[id, 'C32'], str) else []
+                                            if any(value in check_list for value in values_in_c31) or any(value in check_list for value in values_in_c32):
+                                                   error_string = ""
+                                            else:
+                                                   error_string = f" {c}:Temperature method should be corrected!,"
+                                    elif ('B' in domain[c] and (P12 in B)):
                                         error_string = f" {c}:Mandatory entry is empty!,"
                                     elif ('S' in domain[c] and (P12 in P)):                                        
                                         if (c == 'C4') and (df.loc[id, 'P6']) != 'nan':
