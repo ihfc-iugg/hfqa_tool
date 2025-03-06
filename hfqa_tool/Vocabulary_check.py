@@ -400,7 +400,7 @@ def vocabcheck(df,m_dict,domain):
                                     if any(value in check_list for value in values_in_c31) or any(value in check_list for value in values_in_c32):
                                            error_string = ""
                                     else:
-                                           error_string = f" {c}:Temperature method should be corrected!,"
+                                           error_string = " C31:or C32 should be corrected!,"
                                 else:
                                     error_string = ""
                                 
@@ -413,9 +413,9 @@ def vocabcheck(df,m_dict,domain):
                                             values_in_c31 = df.loc[id, 'C31'].split(';') if isinstance(df.loc[id, 'C31'], str) else []
                                             values_in_c32 = df.loc[id, 'C32'].split(';') if isinstance(df.loc[id, 'C32'], str) else []
                                             if any(value in check_list for value in values_in_c31) or any(value in check_list for value in values_in_c32):
-                                                   error_string = ""
+                                                   error_string = f" {c}:Mandatory entry is empty!,"
                                             else:
-                                                   error_string = f" {c}:Temperature method should be corrected!,"
+                                                   error_string = f" {c}:Mandatory entry is empty!, C31:or C32 should be corrected!,"
                                     elif ('B' in domain[c] and (P12 in B)):
                                         error_string = f" {c}:Mandatory entry is empty!,"
                                     elif ('S' in domain[c] and (P12 in P)):                                        
@@ -482,6 +482,7 @@ def vocabcheck(df,m_dict,domain):
                 for dfvalue in dfvalue:
                     dfvalue = dfvalue.strip()
                     # new modifications
+                    '''
                     if (c == 'C48') and (dfvalue == "[random or periodic depth sampling (number)]"):
                         error_string = ""
                     elif (c == 'C48') and (dfvalue.startswith("[random or periodic depth sampling (")):
@@ -501,7 +502,7 @@ def vocabcheck(df,m_dict,domain):
                         except ValueError: 
                             # new modifications
                             error_string = f" {c}:Enter a number,"
-                            
+                    '''        
                     elif (c == 'C43') and ('[egrt]' in (df.loc[id, 'C31'] or df.loc[id, 'C32'])):
                         if dfvalue == "[probe - pulse technique]":
                             error_string = ''

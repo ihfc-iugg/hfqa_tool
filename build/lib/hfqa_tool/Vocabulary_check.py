@@ -11,7 +11,7 @@
 # 
 # The code is intended to be published on the GFZ website for the global scientific community to check if any Heatflow dataset adheres to the data structure described in the aforementioned scientific paper. It's a recommended prerequisite before calculating 'Quality Scores' for a given Heatflow dataset. The code for calculating 'Quality Scores' is provided in a separate document.
 
-# ![Vocab Image](Graphics//Vocab.jpg)
+# ![Vocab Image](Graphics/Vocab.jpg)
 
 # # 1. Importing libraries
 
@@ -21,19 +21,18 @@ import pandas as pd
 import numpy as np
 import math
 from datetime import datetime
-import openpyxl
-import warnings
 import glob
 import os
+import warnings
 import time
+import openpyxl
 import re
-#get_ipython().run_cell_magic('time', '', 'import pandas as pd\nimport numpy as np\nimport math\nfrom datetime import datetime\nimport openpyxl\nimport warnings\nimport glob\nimport os\n')
 
+#get_ipython().run_cell_magic('time', '', 'import pandas as pd\nimport numpy as np\nimport math\nfrom datetime import datetime\nimport openpyxl\nimport warnings\nimport glob\nimport os\nimport re\n')
 
 # In[2]:
 
 
-# Suppress specific warnings
 warnings.filterwarnings("ignore", category=UserWarning, module='openpyxl')
 
 
@@ -99,7 +98,7 @@ def extract10K(df,start):
 # In[5]:
 
 
-NumC = ['P1','P2','P4','P5','P6','P10','P11','C4','C5','C6','C22','C23','C24','C27','C28','C29','C30','C33','C34','C37','C39','C40','C47']
+NumC = ['P1','P2','P4','P5','P6','P10','P11','C1','C4','C5','C6','C22','C23','C24','C27','C28','C29','C30','C33','C34','C37','C39','C40','C47']
 StrC = ['P7','P9','P12','P13','C3','C11','C12','C13','C14','C15','C17','C18','C19','C21','C31','C32','C35','C36','C41','C42','C43','C44','C45','C46','C48']
 DateC = ['C38']
 
@@ -112,9 +111,9 @@ DateC = ['C38']
 
 
 num_data = {
-    #'ID': ['P1','P2','P4','P5','P6','P10','P11','C4','C5','C6','C22','C23','C24','C27','C28','C29','C30','C33','C34','C37','C39','C40','C47'],
-    'Min': [-999999.9,0,-90.00000,-180.00000,-12000,-12000,-12000,0,0,0,0,0,-9.99,-99999.99,-99999.99,-99999.99,-99999.99,0,0,0,0,0,0],
-    'Max': [999999.9,999999.9,90.00000,180.00000,9000,9000,9000,19999.9,19999.9,999.9,99.99,99.99,99.99,99999.99,99999.99,99999.99,99999.99,99999,99999,999999,99.99,99.99,9999]
+    #'ID': ['P1','P2','P4','P5','P6','P10','P11','C1','C2','C4','C5','C6','C22','C23','C24','C27','C28','C29','C30','C33','C34','C37','C39','C40','C47'],
+    'Min': [-999999.9,0,-90.00000,-180.00000,-12000,-12000,-12000,-999999.9,0,0,0,0,0,-9.99,-99999.99,-99999.99,-99999.99,-99999.99,0,0,0,0,0,0],
+    'Max': [999999.9,999999.9,90.00000,180.00000,9000,9000,9000,999999.9,19999.9,19999.9,999.9,99.99,99.99,99.99,99999.99,99999.99,99999.99,99999.99,99999,99999,999999,99.99,99.99,9999]
 }
 
 
@@ -146,22 +145,22 @@ number = 0
 # In[10]:
 
 
-B = ["[Drilling]","[Drilling-Clustering]","[Mining]","[Tunneling]","[GTM]"]
+B = ["[Drilling]","[Drilling-Clustering]","[Mining]","[Tunneling]","[GTM]","[Indirect (GTM, CPD, etc.)]"]
 P = ["[Probing (onshore/lake, river, etc.)]","[Probing (offshore/ocean)]","[Probing-Clustering]"]
 U = ["[Other (specify in comments)]","[unspecified]","nan",""];
-sP7 = ["[Onshore (continental)]","[Onshore (lake, river, etc.)]","[Offshore (continental)]","[Offshore (marine)]","[unspecified])"];
+sP7 = ["[Onshore (continental)]","[Onshore (lake, river, etc.)]","[Offshore (continental)]","[Offshore (marine)]","[unspecified]"];
 sP9=sC9 = ["[Yes]","[No]","[Unspecified]"];
-sP12 = ["[Drilling]","[Mining]","[Tunneling]","[GTM]","[Probing (onshore/lake, river, etc.)]","[Probing (offshore/ocean)]","[Drilling-Clustering]","[Probing-Clustering]","[Other (specify in comments)]","[unspecified]"];
+sP12 = ["[Drilling]","[Mining]","[Tunneling]","[GTM]","[Indirect (GTM, CPD, etc.)]","[Probing (onshore/lake, river, etc.)]","[Probing (offshore/ocean)]","[Drilling-Clustering]","[Probing-Clustering]","[Other (specify in comments)]","[unspecified]"];
 sP13 = ["[Hydrocarbon]","[Underground storage]","[Geothermal]","[Groundwater]","[Mapping]","[Research]","[Mining]","[Tunneling]","[Other (specify in comments)]","[unspecified]"];
-sC3 = ["[Interval method]","[Bullard method]","[Boot-strapping method]","[Numerical inversion]","[Other (specify in coments)]","[unspecified]"];
+sC3 = ["[Interval method]","[Bullard method]","[Boot-strapping method]","[Other numerical computations]","[Other (specify in coments)]","[unspecified]"];
 sC11 = ["[Considered – p]","[Considered – T]","[Considered – pT]","[not considered]","[unspecified]"];
 sC12 = ["[Tilt corrected]","[Drift corrected]","[not corrected]","[Corrected (specify)]","[unspecified]"];
 sC13=sC14=sC15=sC16=sC17=sC18=sC19 = ["[Present and corrected]","[Present and not corrected]","[Present not significant]","[not recognized]","[unspecified]"];
 sC20 = ["[Expedition/Cruise number]","[R/V Ship]","[D/V Platform]","[D/V Glomar Challenger]","[D/V JOIDES Resolution]","[Other (specify in comments)]","[unspecified]"];
 sC21 = ["[Single Steel probe (Bullard)]","[Single Steel probe (Bullard) in-situ TC]","[Violin-Bow probe (Lister)]","[Outrigger probe (Von Herzen) in-situ TC, without corer]","[Outrigger probe (Haenel) in-situ TC, with corer]","[Outrigger probe (Ewing) with corer]","[Outrigger probe (Ewing) without corer]","[Outrigger probe (Lister) with corer]","[Outrigger probe (autonomous) without corer]","[Outrigger probe (autonomous) with corer]","[Submersible probe]","[Other (specify in comments)]","[unspecified]"];
-sC31 = ["[LOGeq]","[LOGpert]","[cLOG]","[DTSeq]","[DTSpert]","[cDTS]","[BHT]","[cBHT]","[DST]","[cDST]","[RTDeq]","[RTDpert]","[cRTD]","[CPD]","[XEN]","[GTM]","[BSR]","[BLK]","[ODTT-PC]","[ODTT-TP]","[SUR]","[unspecified]","[Other (specify in comments)]"];
-sC32 = ["[LOGeq]","[LOGpert]","[cLOG]","[DTSeq]","[DTSpert]","[cDTS]","[BHT]","[cBHT]","[DST]","[cDST]","[RTDeq]","[RTDpert]","[cRTD]","[CPD]","[XEN]","[GTM]","[BSR]","[BLK]","[ODTT-PC]","[ODTT-TP]","[unspecified]","[Other (specify in comments)]"];
-sC35=sC36 = ["[Horner plot]","[Cylinder source method]","[Line source explosion method]","[Inverse numerical modelling]","[Other published correction]","[unspecified]","[not corrected]","[AAPG correction]"];  
+sC31 = ["[LOGeq]","[LOGpert]","[cLOG]","[DTSeq]","[DTSpert]","[cDTS]","[BHT]","[cBHT]","[HT-FT]","[cHT-FT]","[RTDeq]","[RTDpert]","[cRTD]","[CPD]","[XEN]","[GTM]","[BSR]","[BLK]","[ODTT-PC]","[ODTT-TP]","[SUR]","[GRT]","[EGRT]","[unspecified]","[Other (specify in comments)]"];
+sC32 = ["[LOGeq]","[LOGpert]","[cLOG]","[DTSeq]","[DTSpert]","[cDTS]","[BHT]","[cBHT]","[HT-FT]","[cHT-FT]","[RTDeq]","[RTDpert]","[cRTD]","[CPD]","[XEN]","[GTM]","[BSR]","[BLK]","[ODTT-PC]","[ODTT-TP]","[GRT]","[EGRT]","[unspecified]","[Other (specify in comments)]"];
+sC35=sC36 = ["[Horner plot]","[Cylinder source method]","[Line source explosion method]","[Inverse numerical modelling]","[Other published correction]","[unspecified]","[not corrected]","[AAPG correction]","[Harrison correction]"];  
 sC41 = ["[In-situ probe]","[Core-log integration]","[Core samples]","[Cutting samples]","[Outcrop samples]","[Well-log interpretation]","[Mineral computation]","[Assumed from literature]","[other (specify)]","[unspecified]"];
 sC42 = ["[Actual heat-flow location]","[Other location]","[Literature/unspecified]","[Unspecified]"];
 sC43 = ["[Lab - point source]","[Lab - line source / full space]","[Lab - line source / half space]","[Lab - plane source / full space]","[Lab - plane source / half space]","[Lab - other]","[Probe - pulse technique]","[Well-log - deterministic approach]","[Well-log - empirical equation]","[Estimation - from chlorine content]","[Estimation - from water content/porosity]","[Estimation - from lithology and literature]","[Estimation - from mineral composition]","[unspecified]"];
@@ -169,7 +168,8 @@ sC44 = ["[Saturated measured in-situ]","[Recovered]","[Saturated measured]","[Sa
 sC45 = ["[Unrecorded ambient pT conditions]","[Recorded ambient pT conditions]","[Actual in-situ (pT) conditions]","[Replicated in-situ (p)]","[Replicated in-situ (T)]","[Replicated in-situ (pT)]","[Corrected in-situ (p)]","[Corrected in-situ (T)]","[Corrected in-situ (pT)]","[unspecified]"];
 sC46 = ["[T - Birch and Clark (1940)]","[T - Tikhomirov (1968)]","[T - Kutas & Gordienko (1971)]","[T - Anand et al. (1973)]","[T - Haenel & Zoth (1973)]","[T - Blesch et al. (1983)]","[T - Sekiguchi (1984)]","[T - Chapman et al. (1984)]","[T - Zoth & Haenel (1988)]","[T - Somerton (1992)]","[T - Sass et al. (1992)]","[T - Funnell et al. (1996)]","[T - Kukkonen et al. (1999)]","[T - Seipold (2001)]","[T - Vosteen & Schellschmidt (2003)]","[T - Sun et al. (2017)]","[T - Miranda et al. (2018)]","[T - Ratcliffe (1960)]","[p - Bridgman (1924)]","[p - Sibbitt (1975)]","[p - Kukkonen et al. (1999)]","[p - Seipold (2001)]","[p - Durutürk et al. (2002)]","[p - Demirci et al. (2004)]","[p - Görgülü et al. (2008)]","[p - Fuchs & Förster (2014)]","[pT - Ratcliffe (1960)]","[pT - Buntebarth (1991)]","[pT - Chapman & Furlong (1992)]","[pT - Emirov et al. (1997)]","[pT - Abdulagatov et al. (2006)]","[pT - Emirov & Ramazanova (2007)]","[pT - Abdulagatova et al. (2009)]","[pT - Ramazanova & Emirov (2010)]","[pT - Ramazanova & Emirov (2012)]","[pT - Emirov et al. (2017)]","[pT - Hyndman et al. (1974)]","[Site-specific experimental relationships]","[Other (specify in comments)]","[unspecified]"];
 #sC48 = ["[Random or periodic depth sampling (number)]","[Characterize formation conductivities]","[Well log interpretation]","[Computation from probe sensing]","[Other]","[unspecified]"];
-sC48 = [f"[Random or periodic depth sampling ({number})]","[Characterize formation conductivities]","[Well log interpretation]","[Computation from probe sensing]","[Other]","[unspecified]"];
+sC48 = [f"[Random or periodic depth sampling ({number})]","[Random or periodic depth sampling]","[Characterize formation conductivities]","[Well log interpretation]","[Computation from probe sensing]","[Other]","[unspecified]"];
+check_list = ['[clog]', '[cdts]', '[cbht]', '[crtd]', '[cht-ft]'];
 
 
 #     [Description]: To avoid case-sensitivity issues in the controlled vocabulary
@@ -215,7 +215,6 @@ tsdf
 # In[15]:
 
 
-tsdf = tsdf
 for col in tsdf.columns:
     for id in tsdf.index:
         if isinstance(tsdf.loc[id, col], list):
@@ -395,11 +394,29 @@ def vocabcheck(df,m_dict,domain):
                             r = safe_float_conversion(r)
     
                             if  min_value <= r <= max_value:
-                                error_string = ""
+                                if (c == 'C29') and (df.loc[id, 'C27']) != 'nan':                                    
+                                    values_in_c31 = df.loc[id, 'C31'].split(';') if isinstance(df.loc[id, 'C31'], str) else []
+                                    values_in_c32 = df.loc[id, 'C32'].split(';') if isinstance(df.loc[id, 'C32'], str) else []
+                                    if any(value in check_list for value in values_in_c31) or any(value in check_list for value in values_in_c32):
+                                           error_string = ""
+                                    else:
+                                           error_string = f" {c}:Temperature method should be corrected!,"
+                                else:
+                                    error_string = ""
                                 
                             elif math.isnan(r):
                                 if (m_dict[c] == 'M') and (df.loc[id, c]) == 'nan':
-                                    if ('B' in domain[c] and (P12 in B)):
+                                    if c == 'C27':
+                                        if df.loc[id, 'C29'] == 'nan':
+                                            error_string = f" {c}:Mandatory entry is empty!,"
+                                        else:
+                                            values_in_c31 = df.loc[id, 'C31'].split(';') if isinstance(df.loc[id, 'C31'], str) else []
+                                            values_in_c32 = df.loc[id, 'C32'].split(';') if isinstance(df.loc[id, 'C32'], str) else []
+                                            if any(value in check_list for value in values_in_c31) or any(value in check_list for value in values_in_c32):
+                                                   error_string = ""
+                                            else:
+                                                   error_string = f" {c}:Temperature method should be corrected!,"
+                                    elif ('B' in domain[c] and (P12 in B)):
                                         error_string = f" {c}:Mandatory entry is empty!,"
                                     elif ('S' in domain[c] and (P12 in P)):                                        
                                         if (c == 'C4') and (df.loc[id, 'P6']) != 'nan':
@@ -464,9 +481,10 @@ def vocabcheck(df,m_dict,domain):
 
                 for dfvalue in dfvalue:
                     dfvalue = dfvalue.strip()
-                    
-                    #new modifications
-                    if (c == 'C48') and (dfvalue.startswith("[random or periodic depth sampling (")):
+                    # new modifications
+                    if (c == 'C48') and (dfvalue == "[random or periodic depth sampling (number)]"):
+                        error_string = ""
+                    elif (c == 'C48') and (dfvalue.startswith("[random or periodic depth sampling (")):
                         start_idx = dfvalue.find('(')
                         end_idx = dfvalue.find(')')
                         number_str = dfvalue[start_idx + 1:end_idx]
@@ -481,8 +499,14 @@ def vocabcheck(df,m_dict,domain):
                                 error_string = f" {c}:vocabulary warning,"
                             
                         except ValueError: 
-                            error_string = f" {c}:vocabulary warning,"
+                            # new modifications
+                            error_string = f" {c}:Enter a number,"
                             
+                    elif (c == 'C43') and ('[egrt]' in (df.loc[id, 'C31'] or df.loc[id, 'C32'])):
+                        if dfvalue == "[probe - pulse technique]":
+                            error_string = ''
+                        else:
+                            error_string = f" {c}:Please check TC method!,"
 
                     elif dfvalue in string_values:
                         error_string = ""
@@ -519,7 +543,7 @@ def vocabcheck(df,m_dict,domain):
     for id in df.index:
         error_df.loc[id,'C38'] = None
         error_df['C38'] = error_df['C38'].astype("string")
-        dfvalue = df.loc[id,'C38']
+        dfvalue = (df.loc[id,'C38']).lower()
 
         P12_split = (df.loc[id, 'P12']).split(';')
 
@@ -685,21 +709,16 @@ def folder_result(folder_path):
 
 
 def check_vocabulary():
-    folder_path = input("Please enter the file/s directory for vocabulary check: ")
+    folder_path = input("Please enter the file directory for vocabulary check: ")
     convert2UTF8csv(folder_path)
     folder_result(folder_path)
 
 
-# In[28]:
-
-
-#get_ipython().run_cell_magic('time', '', 'check_vocabulary()\n'
-
+# In[ ]:
 start_time = time.time()
 
 check_vocabulary()
 
 elapsed_time = time.time() - start_time
 print(f"Execution time: {elapsed_time} seconds")
-
 
