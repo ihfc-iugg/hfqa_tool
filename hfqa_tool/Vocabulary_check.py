@@ -503,7 +503,7 @@ def vocabcheck(df,m_dict,domain):
                             # new modifications
                             error_string = f" {c}:Enter a number,"
                     '''        
-                    elif (c == 'C43') and ('[egrt]' in (df.loc[id, 'C31'] or df.loc[id, 'C32'])):
+                    if (c == 'C43') and ('[egrt]' in (df.loc[id, 'C31'] or df.loc[id, 'C32'])):
                         if dfvalue == "[probe - pulse technique]":
                             error_string = ''
                         else:
