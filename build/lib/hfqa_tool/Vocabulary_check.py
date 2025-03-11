@@ -145,15 +145,16 @@ number = 0
 # In[10]:
 
 
-B = ["[Drilling]","[Drilling-Clustering]","[Mining]","[Tunneling]","[GTM]","[Indirect (GTM, CPD, etc.)]"]
-P = ["[Probing (onshore/lake, river, etc.)]","[Probing (offshore/ocean)]","[Probing-Clustering]"]
+B = ["[Drilling]","[Drilling-Clustering]","[Mining]","[Tunneling]","[GTM]","[Indirect (GTM-BSR-CPD-etc.)]""]
+P = ["[Probing (onshore-lake-river-etc.)]","[Probing (offshore/ocean)]","[Probing-Clustering]"]
 U = ["[Other (specify in comments)]","[unspecified]","nan",""];
-sP7 = ["[Onshore (continental)]","[Onshore (lake, river, etc.)]","[Offshore (continental)]","[Offshore (marine)]","[unspecified]"];
-sP9=sC9 = ["[Yes]","[No]","[Unspecified]"];
-sP12 = ["[Drilling]","[Mining]","[Tunneling]","[GTM]","[Indirect (GTM, CPD, etc.)]","[Probing (onshore/lake, river, etc.)]","[Probing (offshore/ocean)]","[Drilling-Clustering]","[Probing-Clustering]","[Other (specify in comments)]","[unspecified]"];
+sP7 = ["[Onshore (continental)]","[Onshore (lake-river-etc.)]","[Offshore (continental)]","[Offshore (marine)]","[unspecified]"];
+sP9 = ["[Yes]","[No]","[Unspecified]"];
+sC9 = ["[Yes]","[No]"];
+sP12 = ["[Drilling]","[Mining]","[Tunneling]","[GTM]","[Indirect (GTM-BSR-CPD-etc.)]","[Probing (onshore-lake-river-etc.)]","[Probing (offshore/ocean)]","[Drilling-Clustering]","[Probing-Clustering]","[Other (specify in comments)]","[unspecified]"];
 sP13 = ["[Hydrocarbon]","[Underground storage]","[Geothermal]","[Groundwater]","[Mapping]","[Research]","[Mining]","[Tunneling]","[Other (specify in comments)]","[unspecified]"];
 sC3 = ["[Interval method]","[Bullard method]","[Boot-strapping method]","[Other numerical computations]","[Other (specify in coments)]","[unspecified]"];
-sC11 = ["[Considered – p]","[Considered – T]","[Considered – pT]","[not considered]","[unspecified]"];
+sC11 = ["[Considered - p]","[Considered - T]","[Considered - pT]","[not considered]","[unspecified]"];
 sC12 = ["[Tilt corrected]","[Drift corrected]","[not corrected]","[Corrected (specify)]","[unspecified]"];
 sC13=sC14=sC15=sC16=sC17=sC18=sC19 = ["[Present and corrected]","[Present and not corrected]","[Present not significant]","[not recognized]","[unspecified]"];
 sC20 = ["[Expedition/Cruise number]","[R/V Ship]","[D/V Platform]","[D/V Glomar Challenger]","[D/V JOIDES Resolution]","[Other (specify in comments)]","[unspecified]"];
@@ -167,9 +168,10 @@ sC43 = ["[Lab - point source]","[Lab - line source / full space]","[Lab - line s
 sC44 = ["[Saturated measured in-situ]","[Recovered]","[Saturated measured]","[Saturated calculated]","[Dry measured]","[other (specify)]","[unspecified]"];
 sC45 = ["[Unrecorded ambient pT conditions]","[Recorded ambient pT conditions]","[Actual in-situ (pT) conditions]","[Replicated in-situ (p)]","[Replicated in-situ (T)]","[Replicated in-situ (pT)]","[Corrected in-situ (p)]","[Corrected in-situ (T)]","[Corrected in-situ (pT)]","[unspecified]"];
 sC46 = ["[T - Birch and Clark (1940)]","[T - Tikhomirov (1968)]","[T - Kutas & Gordienko (1971)]","[T - Anand et al. (1973)]","[T - Haenel & Zoth (1973)]","[T - Blesch et al. (1983)]","[T - Sekiguchi (1984)]","[T - Chapman et al. (1984)]","[T - Zoth & Haenel (1988)]","[T - Somerton (1992)]","[T - Sass et al. (1992)]","[T - Funnell et al. (1996)]","[T - Kukkonen et al. (1999)]","[T - Seipold (2001)]","[T - Vosteen & Schellschmidt (2003)]","[T - Sun et al. (2017)]","[T - Miranda et al. (2018)]","[T - Ratcliffe (1960)]","[p - Bridgman (1924)]","[p - Sibbitt (1975)]","[p - Kukkonen et al. (1999)]","[p - Seipold (2001)]","[p - Durutürk et al. (2002)]","[p - Demirci et al. (2004)]","[p - Görgülü et al. (2008)]","[p - Fuchs & Förster (2014)]","[pT - Ratcliffe (1960)]","[pT - Buntebarth (1991)]","[pT - Chapman & Furlong (1992)]","[pT - Emirov et al. (1997)]","[pT - Abdulagatov et al. (2006)]","[pT - Emirov & Ramazanova (2007)]","[pT - Abdulagatova et al. (2009)]","[pT - Ramazanova & Emirov (2010)]","[pT - Ramazanova & Emirov (2012)]","[pT - Emirov et al. (2017)]","[pT - Hyndman et al. (1974)]","[Site-specific experimental relationships]","[Other (specify in comments)]","[unspecified]"];
-#sC48 = ["[Random or periodic depth sampling (number)]","[Characterize formation conductivities]","[Well log interpretation]","[Computation from probe sensing]","[Other]","[unspecified]"];
-sC48 = [f"[Random or periodic depth sampling ({number})]","[Random or periodic depth sampling]","[Characterize formation conductivities]","[Well log interpretation]","[Computation from probe sensing]","[Other]","[unspecified]"];
-check_list = ['[clog]', '[cdts]', '[cbht]', '[crtd]', '[cht-ft]'];
+sC48 = ["[Random or periodic depth sampling]","[Characterize formation conductivities]","[Well log interpretation]","[Computation from probe sensing]","[Other]","[unspecified]"];
+#sC48 = [f"[Random or periodic depth sampling ({number})]","[Random or periodic depth sampling]","[Characterize formation conductivities]","[Well log interpretation]","[Computation from probe sensing]","[Other]","[unspecified]"];
+check_list1 = ['[sur]','[clog]', '[cdts]', '[cbht]', '[crtd]', '[cht-ft]'];
+check_list2 = ['[clog]', '[cdts]', '[cbht]', '[crtd]', '[cht-ft]'];
 
 
 #     [Description]: To avoid case-sensitivity issues in the controlled vocabulary
@@ -397,10 +399,10 @@ def vocabcheck(df,m_dict,domain):
                                 if (c == 'C29') and (df.loc[id, 'C27']) != 'nan':                                    
                                     values_in_c31 = df.loc[id, 'C31'].split(';') if isinstance(df.loc[id, 'C31'], str) else []
                                     values_in_c32 = df.loc[id, 'C32'].split(';') if isinstance(df.loc[id, 'C32'], str) else []
-                                    if any(value in check_list for value in values_in_c31) or any(value in check_list for value in values_in_c32):
+                                    if any(value in check_list1 for value in values_in_c31) or any(value in check_list2 for value in values_in_c32):
                                            error_string = ""
                                     else:
-                                           error_string = f" {c}:Temperature method should be corrected!,"
+                                           error_string = " C31:or C32 should be corrected!,"
                                 else:
                                     error_string = ""
                                 
@@ -412,10 +414,10 @@ def vocabcheck(df,m_dict,domain):
                                         else:
                                             values_in_c31 = df.loc[id, 'C31'].split(';') if isinstance(df.loc[id, 'C31'], str) else []
                                             values_in_c32 = df.loc[id, 'C32'].split(';') if isinstance(df.loc[id, 'C32'], str) else []
-                                            if any(value in check_list for value in values_in_c31) or any(value in check_list for value in values_in_c32):
-                                                   error_string = ""
+                                            if any(value in check_list1 for value in values_in_c31) or any(value in check_list2 for value in values_in_c32):
+                                                   error_string = f" {c}:Mandatory entry is empty!,"
                                             else:
-                                                   error_string = f" {c}:Temperature method should be corrected!,"
+                                                   error_string = f" {c}:Mandatory entry is empty!, C31:or C32 should be corrected!,"
                                     elif ('B' in domain[c] and (P12 in B)):
                                         error_string = f" {c}:Mandatory entry is empty!,"
                                     elif ('S' in domain[c] and (P12 in P)):                                        
@@ -482,6 +484,7 @@ def vocabcheck(df,m_dict,domain):
                 for dfvalue in dfvalue:
                     dfvalue = dfvalue.strip()
                     # new modifications
+                    '''
                     if (c == 'C48') and (dfvalue == "[random or periodic depth sampling (number)]"):
                         error_string = ""
                     elif (c == 'C48') and (dfvalue.startswith("[random or periodic depth sampling (")):
@@ -501,8 +504,8 @@ def vocabcheck(df,m_dict,domain):
                         except ValueError: 
                             # new modifications
                             error_string = f" {c}:Enter a number,"
-                            
-                    elif (c == 'C43') and ('[egrt]' in (df.loc[id, 'C31'] or df.loc[id, 'C32'])):
+                    '''        
+                    if (c == 'C43') and ('[egrt]' in (df.loc[id, 'C31'] or df.loc[id, 'C32'])):
                         if dfvalue == "[probe - pulse technique]":
                             error_string = ''
                         else:

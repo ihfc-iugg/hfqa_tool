@@ -114,8 +114,8 @@ DateC = ['C38']
 # In[6]:
 
 
-B = ['[drilling]','[drilling-clustering]', '[mining]', '[tunneling]', '[indirect (gtm, cpd, etc.)]']
-P = ['[probing (onshore/lake, river, etc.)]', '[probing (offshore/ocean)]', '[probing-clustering]']
+B = ['[drilling]','[drilling-clustering]', '[mining]', '[tunneling]', '[indirect (gtm-bsr-cpd-etc.)]']
+P = ['[probing (onshore-lake-river-etc.)]', '[probing (offshore/ocean)]', '[probing-clustering]']
 
 
 # ## 4.3. Assigning data types to specific columns

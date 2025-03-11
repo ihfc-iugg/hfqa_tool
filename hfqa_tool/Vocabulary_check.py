@@ -145,15 +145,16 @@ number = 0
 # In[10]:
 
 
-B = ["[Drilling]","[Drilling-Clustering]","[Mining]","[Tunneling]","[GTM]","[Indirect (GTM, CPD, etc.)]"]
-P = ["[Probing (onshore/lake, river, etc.)]","[Probing (offshore/ocean)]","[Probing-Clustering]"]
+B = ["[Drilling]","[Drilling-Clustering]","[Mining]","[Tunneling]","[GTM]","[Indirect (GTM-BSR-CPD-etc.)]"]
+P = ["[Probing (onshore-lake-river-etc.)]","[Probing (offshore/ocean)]","[Probing-Clustering]"]
 U = ["[Other (specify in comments)]","[unspecified]","nan",""];
-sP7 = ["[Onshore (continental)]","[Onshore (lake, river, etc.)]","[Offshore (continental)]","[Offshore (marine)]","[unspecified]"];
-sP9=sC9 = ["[Yes]","[No]","[Unspecified]"];
-sP12 = ["[Drilling]","[Mining]","[Tunneling]","[GTM]","[Indirect (GTM, CPD, etc.)]","[Probing (onshore/lake, river, etc.)]","[Probing (offshore/ocean)]","[Drilling-Clustering]","[Probing-Clustering]","[Other (specify in comments)]","[unspecified]"];
+sP7 = ["[Onshore (continental)]","[Onshore (lake-river-etc.)]","[Offshore (continental)]","[Offshore (marine)]","[unspecified]"];
+sP9 = ["[Yes]","[No]","[Unspecified]"];
+sC9 = ["[Yes]","[No]"];
+sP12 = ["[Drilling]","[Mining]","[Tunneling]","[GTM]","[Indirect (GTM-BSR-CPD-etc.)]","[Probing (onshore-lake-river-etc.)]","[Probing (offshore/ocean)]","[Drilling-Clustering]","[Probing-Clustering]","[Other (specify in comments)]","[unspecified]"];
 sP13 = ["[Hydrocarbon]","[Underground storage]","[Geothermal]","[Groundwater]","[Mapping]","[Research]","[Mining]","[Tunneling]","[Other (specify in comments)]","[unspecified]"];
 sC3 = ["[Interval method]","[Bullard method]","[Boot-strapping method]","[Other numerical computations]","[Other (specify in coments)]","[unspecified]"];
-sC11 = ["[Considered – p]","[Considered – T]","[Considered – pT]","[not considered]","[unspecified]"];
+sC11 = ["[Considered - p]","[Considered - T]","[Considered - pT]","[not considered]","[unspecified]"];
 sC12 = ["[Tilt corrected]","[Drift corrected]","[not corrected]","[Corrected (specify)]","[unspecified]"];
 sC13=sC14=sC15=sC16=sC17=sC18=sC19 = ["[Present and corrected]","[Present and not corrected]","[Present not significant]","[not recognized]","[unspecified]"];
 sC20 = ["[Expedition/Cruise number]","[R/V Ship]","[D/V Platform]","[D/V Glomar Challenger]","[D/V JOIDES Resolution]","[Other (specify in comments)]","[unspecified]"];
