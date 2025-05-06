@@ -70,27 +70,6 @@ def convert2UTF8csv(folder_path):
             print(f"An unexpected error occurred while processing {excel_file_path}: {e}")
 
 
-# ## 2.2. Extract 10K entries
-
-#     [Disclaimer]: Only required for very large database with more than 10,000 entry.
-#     
-#     [Description]: To prepare segments of a large Heatflow database file, such as Global Heatflow Database 2024 release. Which has more than 90,000 Heatflow data entries. Each segment/ chunk would have 10,000 entries or rows. The segmentation helps run the program functions faster in generating results output.
-
-# In[4]:
-
-
-def extract10K(df,start):
-    df_first_7_rows = df.head(7)
-    df = remove_rows(df)
-
-    df['ID'] = df['ID'].astype(float)
-    end = start + 10000
-
-    filtered_df = df[(df['ID'] >= start) & (df['ID'] <= end)]
-
-    appended_df = pd.concat([df_first_7_rows, filtered_df], ignore_index=True)
-    appended_df.to_csv(f"chunk{start}.csv")
-
 
 # # 3. Controlled vocabulary
 # ## 3.1. Assigning columns with similar data types to specific list
