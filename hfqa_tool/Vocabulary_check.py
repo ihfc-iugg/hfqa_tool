@@ -148,7 +148,18 @@ sC48 = ["[Random or periodic depth sampling]","[Characterize formation conductiv
 #sC48 = [f"[Random or periodic depth sampling ({number})]","[Random or periodic depth sampling]","[Characterize formation conductivities]","[Well log interpretation]","[Computation from probe sensing]","[Other]","[unspecified]"];
 check_list1 = ['[sur]','[clog]', '[cdts]', '[cbht]', '[crtd]', '[cht-ft]'];
 check_list2 = ['[clog]', '[cdts]', '[cbht]', '[crtd]', '[cht-ft]'];
+check_list3 = [
+    "[Unrecorded ambient pT conditions]",
+    "[Recorded ambient pT conditions]",
+    "[Actual in-situ (pT) conditions]",
+    "[Replicated in-situ (p)]",
+    "[Replicated in-situ (T)]",
+    "[Replicated in-situ (pT)]",
+    "[unspecified]"
+]
 
+# Convert list items to lowercase once
+check_list3 = [v.lower() for v in check_list3]
 
 # In[12]:
 
@@ -948,6 +959,27 @@ def vocabcheck(df,m_dict,domain):
                             error_string = ''
                         else:
                             error_string = f" {c}:Please check TC method!,"
+
+                    elif (c == 'C45'):
+                        if (dfvalue in check_list3):
+                            error_string = '' #f" {c}:lala"
+                        elif (df.loc[id, 'C46'] == '[unspecified]'):
+                            error_string = ''
+                        elif ((dfvalue == "[corrected in-situ (p)]") and (str(df.loc[id, 'C46']).startswith('[p -'))):
+                            error_string = ''
+                        elif ((dfvalue == "[corrected in-situ (t)]") and (str(df.loc[id, 'C46']).startswith('[t -'))):
+                            error_string = ''
+                        elif (dfvalue == "[corrected in-situ (pt)]"):
+                            if '[pt -' in str(df.loc[id, 'C46']):
+                                error_string = ''
+                            elif ('[p -' in str(df.loc[id, 'C46'])) and ('[t -' in str(df.loc[id, 'C46'])):
+                                error_string = ''
+                            else:
+                                error_string = f" {c}:Please check TC p-T function!,"
+                        elif (dfvalue not in ['nan', '[unspecified]']) and (df.loc[id, 'C46'] == 'nan'):
+                            error_string = f" {c}:TC p-T function is missing!,"
+                        else:
+                            error_string = f" {c}:Please check TC p-T function!,"
 
                     elif dfvalue in string_values:
                         error_string = ""
