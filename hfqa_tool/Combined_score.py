@@ -15,25 +15,83 @@
 
 import pandas as pd
 import numpy as np
+import math
+from datetime import datetime
 import glob
 import os
 import warnings
 import time
-import multiprocessing
-from tqdm import tqdm
-from hfqa_tool.utils.utils import (
-    readable,
-    remove_head,
-    assign_columns,
-    assign_values
-)
 
 #get_ipython().run_cell_magic('time', '', 'import pandas as pd\nimport numpy as np\nimport math\nfrom datetime import datetime\nimport glob\nimport os\nimport warnings\n')
 
 
 # In[2]:
 
+
 warnings.filterwarnings("ignore", category=UserWarning, module='openpyxl')
+
+
+# # 2. Convert to .csv utf-8 format
+
+#     [Description]: To make the HF database readable and computable for the functions
+
+# In[3]:
+
+
+def convert2UTF8csv(folder_path):    
+    excel_files = glob.glob(os.path.join(folder_path, '*.xlsx'))
+
+    for excel_file_path in excel_files:
+        if excel_file_path.endswith('_vocab_check.xlsx') or excel_file_path.endswith('_scores_result.xlsx'):
+            continue
+
+        try:
+            excel_file = pd.ExcelFile(excel_file_path, engine='openpyxl')
+            
+            data_list_sheet = excel_file.parse('data list')
+            
+            output_csv_file = os.path.splitext(excel_file_path)[0] + '.csv'
+            
+            data_list_sheet.to_csv(output_csv_file, index=False, encoding='utf-8')
+            
+            del data_list_sheet
+            del excel_file
+            
+        except ValueError as e:
+            print(f"Error processing {excel_file_path}: {e}")
+        except Exception as e:
+            print(f"An unexpected error occurred while processing {excel_file_path}: {e}")
+
+
+# # 3. Remove extra rows
+
+#     [Description]: To perform computations on the entered HF entries only and skip the column labels. There are two conditions: firstly, when the first cell of the dataframe has the column label 'Obligation', the top 8 rows are considered description. Secondly, when the first cell has the column label 'Short Name', the top 2 rows are considered description. The function 'remove_rows()' below switches between these two conditions and removes the description to prepare the dataframe for operability with other functions.
+
+# In[4]:
+
+
+def remove_rows(df):
+    if df.at[0,'ID'] == 'Obligation':
+        df_copy = df
+        top_rows = df_copy.index[0:7]
+        df_copy = df_copy.drop(df_copy.index[0:7])
+
+        new_index_values = range(1, 1+len(df_copy))
+        df_copy.index = new_index_values
+        #flag = 6
+        return df_copy
+    elif df.at[0,'ID'] == 'Short Name':
+        df_copy = df
+        top_rows = df_copy.index[0:1]
+        df_copy = df_copy.drop(df_copy.index[0:1])
+
+        new_index_values = range(1, 1+len(df_copy))
+        df_copy.index = new_index_values
+        #flag = 1
+        return df_copy
+    else:
+        return df
+
 
 # # 4. Assign Datatype and handle case sensitivity
 
@@ -41,14 +99,12 @@ warnings.filterwarnings("ignore", category=UserWarning, module='openpyxl')
 
 # In[5]:
 
-NumC, StrC, DateC = assign_columns()
-NumC = [col for col in NumC if col not in ['P1', 'P2']]
-index_C1 = NumC.index('C1')
-NumC.insert(index_C1 + 1, 'C2')
-index_C15 = StrC.index('C15')
-StrC.insert(index_C15 + 1, 'C16')
-index_C19 = StrC.index('C19')
-StrC.insert(index_C19 + 1, 'C20')
+
+NumC = ['P4','P5','P6','P10','P11','C1','C2','C4','C5','C6','C22','C23','C24','C27','C28','C29','C30','C33',
+        'C34','C37','C39','C40','C47']
+StrC = ['P7','P9','P12','P13','C3','C11','C12','C13','C14','C15','C16','C17','C18','C19','C20','C21','C31',
+        'C32','C35','C36','C41','C42','C43','C44','C45','C46','C48']
+DateC = ['C38']
 
 
 # ## 4.2. Check domain
@@ -57,7 +113,10 @@ StrC.insert(index_C19 + 1, 'C20')
 
 # In[6]:
 
-B, P, U = assign_values()
+
+B = ['[drilling]','[drilling-clustering]', '[mining]', '[tunneling]', '[indirect (gtm-bsr-cpd-etc.)]']
+P = ['[probing (onshore-lake-river-etc.)]', '[probing (offshore/ocean)]', '[probing-clustering]']
+
 
 # ## 4.3. Assigning data types to specific columns
 
@@ -151,7 +210,7 @@ def calc_U_score(df):
 
 
 def CompleteUscore_calc(df):
-    result = calc_U_score(change_type(remove_head(df)))
+    result = calc_U_score(change_type(remove_rows(df)))
     return result
 
 
@@ -253,7 +312,7 @@ def ProbeT_score(df):
 
 
 def Complete_PT_calc(df):
-    T_score_df = ProbeT_score(change_type(remove_head(df)))
+    T_score_df = ProbeT_score(change_type(remove_rows(df)))
     return T_score_df
 
 
@@ -284,7 +343,7 @@ def ProbeTC_score(df):
                 p1=p2=p3=p4=least_penalty= None
 
                 if c == 'C42': # tc_location
-                    if "[literature/unspecified]" in df.loc[id,'C42']:
+                    if "[literature-unspecified]" in df.loc[id,'C42']:
                         p1 = -0.2
                     elif "[other location]" in df.loc[id,'C42']:
                         p2 = -0.1
@@ -296,14 +355,14 @@ def ProbeTC_score(df):
 
                 elif c == 'C43': # tc_method                    
                     if df.loc[id,'C43'].startswith('[lab'):
-                        if df.loc[id,'C44'] in ["[dry measured]","[unspecified]","[other (specify)]"]:
+                        if df.loc[id,'C44'] in ["[dry measured]","[unspecified]","[other (specify in comments)]"]:
                             p1 = -0.2
                         if "[saturated calculated]" in df.loc[id,'C44']:
                             p2 = -0.1
                         elif df.loc[id,'C44'] in ["[saturated measured]","[recovered]"]:
                             p3 = 0                              
                     elif df.loc[id,'C43'] in ["[unspecified]","[estimation - from chlorine content]",
-                                              "[estimation - from water content/porosity]",
+                                              "[estimation - from water content-porosity]",
                                               "[estimation - from mineral composition]"]:
                         p1 = -0.2
                     elif "[estimation - from lithology and literature]" in df.loc[id,'C43']:
@@ -332,12 +391,12 @@ def ProbeTC_score(df):
                         x_present = True
 
                 elif c == 'C47': # tc_number
-                    if ("[literature/unspecified]" not in df.loc[id,'C42']) and ((0<=df.loc[id,'C47']<=1)
+                    if ("[literature-unspecified]" not in df.loc[id,'C42']) and ((0<=df.loc[id,'C47']<=1)
                                                                                  or np.isnan(df.loc[id,'C47'])):
                         p1 = -0.2
-                    elif ("[literature/unspecified]" not in df.loc[id,'C42']) and (2<=df.loc[id,'C47']<=3):
+                    elif ("[literature-unspecified]" not in df.loc[id,'C42']) and (2<=df.loc[id,'C47']<=3):
                         p2 = -0.1
-                    elif ("[literature/unspecified]" not in df.loc[id,'C42']) and (df.loc[id,'C47']>3):
+                    elif ("[literature-unspecified]" not in df.loc[id,'C42']) and (df.loc[id,'C47']>3):
                         p3 = 0   
                     else:
                         error_string = error_string + f"{c}, "
@@ -360,7 +419,7 @@ def ProbeTC_score(df):
 
 
 def Complete_PTC_calc(df):
-    T_score_df = ProbeTC_score(change_type(remove_head(df)))
+    T_score_df = ProbeTC_score(change_type(remove_rows(df)))
     return T_score_df
 
 
@@ -450,7 +509,7 @@ def Bore_t_M_score(df):
 
 
 def Complete_BtM_calc(df):
-    T_score_df = Bore_t_M_score(change_type(remove_head(df)))
+    T_score_df = Bore_t_M_score(change_type(remove_rows(df)))
     return T_score_df
 
 
@@ -488,7 +547,7 @@ def Bore_tc_M_score(df):
                     break
                     
                 elif (c == 'C42') and ((df.loc[id,'C4'] or df.loc[id,'C5']) is not np.nan):              
-                    if "[literature/unspecified]" in df.loc[id,'C42']:
+                    if "[literature-unspecified]" in df.loc[id,'C42']:
                         p1 = -0.2
                     elif "[other location]" in df.loc[id,'C42']:
                         p2 = -0.1
@@ -500,7 +559,7 @@ def Bore_tc_M_score(df):
 
                 elif c == 'C41':
                 # 2) Source type
-                    if df.loc[id,'C41'] in ["[mineral computation]","[assumed from literature]","[other (specify)]",
+                    if df.loc[id,'C41'] in ["[mineral computation]","[assumed from literature]","[other (specify in comments)]",
                                             "[unspecified]"]:
                         p1 = -0.2
                     elif df.loc[id,'C41'] in ["[cutting samples]","[outcrop samples]","[well-log interpretation]"]:
@@ -515,12 +574,12 @@ def Bore_tc_M_score(df):
 
                 elif c == 'C47':
                 # 3) Number of conductivites: tc_number
-                    if "[literature/unspecified]" in df.loc[id,'C42']:
+                    if "[literature-unspecified]" in df.loc[id,'C42']:
                         p1 = -0.1
-                    elif ("[literature/unspecified]" not in df.loc[id,'C42']) and (np.isnan(df.loc[id,'C47'])
+                    elif ("[literature-unspecified]" not in df.loc[id,'C42']) and (np.isnan(df.loc[id,'C47'])
                                                                                    or (1<=df.loc[id,'C47']<=15)):
                         p1 = -0.1
-                    elif ("[literature/unspecified]" not in df.loc[id,'C42']) and (df.loc[id,'C47'] >15):
+                    elif ("[literature-unspecified]" not in df.loc[id,'C42']) and (df.loc[id,'C47'] >15):
                         p2 = 0
                     else:
                         error_string = error_string + f" {c},"
@@ -528,7 +587,7 @@ def Bore_tc_M_score(df):
 
                 elif c == 'C44':
                     # 4) Saturation: tc_saturation
-                    if df.loc[id,'C44'] in ["[dry measured]","[unspecified]","[other (specify)]"]:
+                    if df.loc[id,'C44'] in ["[dry measured]","[unspecified]","[other (specify in comments)]"]:
                         p1 = -0.2
                     elif df.loc[id,'C44'] in ["[recovered]","[saturated calculated]"]:
                         p2 = -0.1
@@ -569,7 +628,7 @@ def Bore_tc_M_score(df):
 
 
 def Complete_BtcM_calc(df):
-    T_score_df = Bore_tc_M_score(change_type(remove_head(df)))
+    T_score_df = Bore_tc_M_score(change_type(remove_rows(df)))
     return T_score_df
 
 
@@ -581,7 +640,7 @@ def Complete_BtcM_calc(df):
 
 
 def concatenate_TScores(df):
-    new_df = change_type(remove_head(df))
+    new_df = change_type(remove_rows(df))
     result = pd.concat([new_df['P12'],Complete_PT_calc(df), Complete_PTC_calc(df), Complete_BtM_calc(df),
                         Complete_BtcM_calc(df)], axis=1) # 
     return result
@@ -804,7 +863,7 @@ def p_flag(df):
 
 
 def complete_PFlag_calc(df):
-    result_df = p_flag(change_type(remove_head(df)))
+    result_df = p_flag(change_type(remove_rows(df)))
     return result_df
 
 
@@ -880,50 +939,43 @@ def attachOG(og):
 # In[27]:
 
 
-def folder_result(csv_file_path):
-    
-    df = pd.read_csv(csv_file_path)
-    
-    df_result = attachOG(df)
-    
-    output_excel_file = os.path.splitext(csv_file_path)[0] + '_scores_result.xlsx'
-    
-    df_result.to_excel(output_excel_file, index=False)
-    
-    # Get the string after the last forward or backward slash
-    filename = os.path.basename(output_excel_file)
-    print(f"Result exported: {filename}")
+def folder_result(folder_path):
 
-    os.remove(csv_file_path)
+    csv_files = glob.glob(os.path.join(folder_path, '*.csv'))
+    
+    for csv_file_path in csv_files:
+        df = pd.read_csv(csv_file_path)
+        
+        df_result = attachOG(df)
+        
+        output_excel_file = os.path.splitext(csv_file_path)[0] + '_scores_result.xlsx'
+        
+        df_result.to_excel(output_excel_file, index=False)
+        
+        print(f"Result exported. Excel file saved as: {output_excel_file}")
+
+    for csv_file_path in csv_files:
+        os.remove(csv_file_path)
 
 
-# In[ ]:
 # # 12. hfqa_tool function
 
 #      [Description]: To calculate Quality score for all the HF dataframe files in a folder.
 
-def quality_score(folder_path):
-    readable(folder_path)
-    """Calculates the quality score for all CSV files in a folder."""
-    csv_files = glob.glob(os.path.join(folder_path, '*.csv'))   
-    cpu_cores = os.cpu_count()
-    num_workers = max(1, cpu_cores - 2)  # Use all cores except for two
-    start_time = time.time()
+# In[28]:
 
-    with tqdm(total=len(csv_files)) as pbar:
-        pool = multiprocessing.Pool(num_workers)
 
-        def update_progress():
-            pbar.update()
+def quality_score():
+    folder_path = input("Please enter the file directory for score calculation: ")
+    convert2UTF8csv(folder_path)
+    folder_result(folder_path)
 
-        for _ in pool.imap(folder_result, csv_files):
-            update_progress()
-                
-        pool.close()
-        pool.join()
 
-    print(f"Processing completed in {time.time() - start_time} seconds.")
+# In[ ]:
+start_time = time.time()
 
-if __name__ == "__main__":
-    folder_path = input("Please enter the file directory for quality score: ")
-    quality_score()
+quality_score()
+
+elapsed_time = time.time() - start_time
+print(f"Execution time: {elapsed_time} seconds")
+
