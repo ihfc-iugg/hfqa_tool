@@ -990,6 +990,11 @@ def vocabcheck(df,m_dict,domain):
                         if m_dict[c] == 'M':
                             if (c == 'C31' or 'C32') and (df.loc[id, 'C23'] is None):
                                 error_string = f" {c}:mandatory field!,"
+                            elif c == 'C46':
+                                if ('corrected' in str(df.loc[id, 'C45']) or 'unspecified' in str(df.loc[id, 'C45'])):
+                                    error_string = f" {c}:mandatory field!,"
+                                else:
+                                    error_string = ""
                             else:
                                 if ('B' in domain[c] and (P12 in B)):
                                     error_string = f" {c}:Mandatory entry is empty!,"
