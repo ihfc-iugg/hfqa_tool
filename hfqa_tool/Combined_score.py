@@ -672,7 +672,9 @@ def merge_Tscore(df):
             df.loc[id, 'X']= df.loc[id, 'X_Bore']
             df.loc[id, 'Error'] = df.loc[id, 'Error_BoreTG'] + df.loc[id, 'Error_BoreTC']
         else:
-            pass
+            df.loc[id, 'T_score'] = np.nan
+            df.loc[id, 'TC_score'] = np.nan
+            df.loc[id, 'Error'] = "P12: Vocab Check is needed"
 
     column_to_remove = ['Probe_Tscore', 'Probe_TCscore', 'Bore_Tscore', 'Bore_TCscore','Error_ProbeTG',
                         'Error_ProbeTC','Error_BoreTG','Error_BoreTC','X_Probe','X_Bore','X_ProbeTG',
