@@ -882,14 +882,14 @@ def vocabcheck(df,m_dict,domain):
                                 elif m_dict[c] == 'M':
                                     if P12 in B:
                                         if (c == 'C5') and (df.loc[id, 'C6'] is None):
-                                            error_string = f" {c}:mandatory field!,"   
+                                            error_string = f" {c}:Mandatory entry is empty!,"
                                         else:
                                             error_string = ""
                                     elif P12 in P:
                                         if (c == 'C6') and (df.loc[id, 'C5'] is None):
-                                            error_string = f" {c}:mandatory field!,"
+                                            error_string = f" {c}:Mandatory entry is empty!,"
                                         elif (c == 'C23') and ((df.loc[id, 'C31'] or df.loc[id, 'C32']) is None):
-                                            error_string = f" {c}:mandatory field!,"
+                                            error_string = f" {c}:Mandatory entry is empty!,"
                                         else:
                                             error_string = ""
                                 else:
@@ -989,10 +989,10 @@ def vocabcheck(df,m_dict,domain):
                     elif dfvalue == 'nan':
                         if m_dict[c] == 'M':
                             if (c == 'C31' or 'C32') and (df.loc[id, 'C23'] is None):
-                                error_string = f" {c}:mandatory field!,"
+                                error_string = f" {c}:Mandatory entry is empty!,"
                             elif c == 'C46':
                                 if ('corrected' in str(df.loc[id, 'C45']) or 'unspecified' in str(df.loc[id, 'C45'])):
-                                    error_string = f" {c}:mandatory field!,"
+                                    error_string = f" {c}:Mandatory entry is empty!,"
                                 else:
                                     error_string = ""
                             else:
