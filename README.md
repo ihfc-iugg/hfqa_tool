@@ -21,6 +21,7 @@ It's a recommended prerequisite before calculating 'Quality Scores' for a given 
 
 # Documentation
 The list of Co-Authors involved in developing this toolbox are mentioned in [AUTHORs.md](https://github.com/sfchishti/hfqa_tool/blob/main/AUTHORs.md)
+Chishti, Saman F.; Balkan-Pazvantoğlu, Elif; Norden, Ben; Neumann, Florian; Elbarbary, Samah; Gross, Eskil S.; Petrunin, Alexey G.; Fuchs, Sven (2025): Heat Flow Quality Analysis Toolbox (hfqa_tool). GFZ Data Services. [URL](https://doi.org/10.5880/fidgeo.2025.043)
 
 # System Requirements
 ## Hardware requirements
