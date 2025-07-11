@@ -1,6 +1,7 @@
 MIT License
 
-Copyright (c) <2025> the authors, GFZ Helmholtz Centre for Geosciences
+Copyright (c) <2025> Chishti, S.F., Balkan-Pazvantoğlu, E., Norden, B.; Neumann, F., Elbarbary, S., Gross, E.S., Petrunin, A.G., Fuchs, S.,
+GFZ Helmholtz Centre for Geosciences
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and 
 associated documentation files (the "hfqa_tool"), to deal in the Software without restriction, 
