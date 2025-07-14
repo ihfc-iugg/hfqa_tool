@@ -135,10 +135,9 @@ git push
 - When a new data release occurs and the relevancy (indicated by *'Obligation'*) of a column in the HF data structure is updated, make sure to place the data structure files with the updated column relevancy into separate folders before running the code.
 
 # License
-**Copyright © 2024 German Geoscience Research Center (GFZ)**
+**Copyright © <2025> Chishti, S.F., Balkan-Pazvantoğlu, E., Norden, B.; Neumann, F., Elbarbary, S., Gross, E.S., Petrunin, A.G., Fuchs, S. GFZ Helmholtz Centre for Geosciences**
 
 This work is licensed under multiple licenses:
-
 
 - The source codes are licensed under **[MIT](license/MIT.txt)**.
 - The documentation and the images are licensed under **[CC-BY-4.0](license/CC-BY-4.0.txt)**.
