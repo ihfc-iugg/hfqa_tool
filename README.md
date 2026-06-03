@@ -1,143 +1,314 @@
-# hfqa_tool
+# Heat Flow Quality Analysis Tool (hfqa_tool)
+`hfqa_tool` is a Python package for validating heat-flow data against the IHFC Global Heat Flow Database (GHFDB) schema and assessing data quality according to International Heat Flow Commission standards, including quality scoring based on the methodology described in [doi:10.1016/j.tecto.2023.229976](https://doi.org/10.1016/j.tecto.2023.229976)
 
+## Table of contents 
+- [Version History](#version-history)
 - [Overview](#overview)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Vocabulary Validation](#vocabulary-validation)
+- [Quality Scoring](#quality-scoring)
 - [Documentation](#documentation)
-- [System Requirements](#system-requirements)
-- [Installation Guide](#installation-guide)
-- [Running code](#running-code)
-- [Setting up the development environment](#setting-up-the-development-environment)
-- [Precaution](#precaution)
+- [Contributing](#contributing)
+- [Citation](#citation)
 - [License](#license)
-- [Issues](ISSUES.md)
 
-# Overview
+## Version History 
 
-**Heat Flow Quality Analysis Toolbox** `hfqa_tool` is a Python package containing tools for validating and evaluating the quality of heat flow data. It is designed for researchers and professionals. `hfqa_tool` simplifies heat flow data analysis by providing standardized and reproducible quality checks. This is developed in compliance with the paper by Fuchs et al. (2023) titled "[Quality-assurance of heat-flow data: The new structure and evaluation scheme of the IHFC Global Heat Flow Database](https://doi.org/10.1016/j.tecto.2023.229976)," published in Tectonophysics 863: 229976. Also revised for the newer release 2024. There are mainly 2 functions defined in this tool with description as follows:
+| Version | Branch / Repository | Status |
+|---------|-------------------|--------|
+| v0.2.0 *(current)* | [`main`](https://github.com/ihfc-iugg/hfqa_tool) | Active |
+| v0.1.0 | [`v0.1.0-legacy`](https://github.com/ihfc-iugg/hfqa_tool/tree/v0.1.0-legacy) | Deprecated — please use `main` |
 
-- `vocabulary_check()`: This set of code has been developed to check whether all the values entered in a Heatflow database adhere to a controlled vocabulary and proper structure described in the aforementioned scientific paper. It generates an error message for each entry where the value entered is out of bounds and does not meet the assigned criteria. The code also enables checking the vocabulary for multiple values entered in a single column for a particular Heatflow data entry.
-It's a recommended prerequisite before calculating 'Quality Scores' for a given Heatflow dataset.
+> **Note:** As of v0.2.0, the `main` branch of [ihfc-iugg/hfqa_tool](https://github.com/ihfc-iugg/hfqa_tool) reflects the current active version. The previous codebase has been preserved under the `v0.1.0-legacy` branch for reference but is no longer maintained.
 
-- `quality_scores()`: This code has been developed to assess the quality of the Heatflow database in terms of U-score (Uncertainty quantification), M-Score (Methodological quality), and P-Flags (Perturbation effects) adhering to the data structure described in the aforementioned scientific paper.
+## Overview
 
-# Documentation
-The list of Co-Authors involved in developing this toolbox are mentioned in [AUTHORs.md](https://github.com/sfchishti/hfqa_tool/blob/main/AUTHORs.md)
+`Vocabulary Validation` ensures that data entries comply with the GHFDB database schema by verifying required fields, value ranges, allowed vocabularies, multi-value fields, conditional rules, and by reporting, field-specific errors.
 
-Chishti, Saman F.; Balkan-Pazvantoğlu, Elif; Norden, Ben; Neumann, Florian; Elbarbary, Samah; Gross, Eskil S.; Petrunin, Alexey G.; Fuchs, Sven (2025): Heat Flow Quality Analysis Toolbox (hfqa_tool). GFZ Data Services. [doi:10.5880/fidgeo.2025.043](https://doi.org/10.5880/fidgeo.2025.043)
+`Quality Score` calculates U-scores (uncertainty quantification, U1-U4), M-scores (methodology assessment based on measurement techniques, M1-M4), and P-flags (perturbations effect such as topographic, paleoclimatic etc. )
 
-# System Requirements
-## Hardware requirements
-`hfqa_tool` package requires only a standard computer with enough RAM to support the in-memory operations.
-For multiprocessing you would need more than 2 cores.
 
-## Software requirements
-### OS Requirements
-This package is supported for *Windows*, *macOS* and *Linux*. The package has been tested on the following systems:
-+ Windows: Windows 10 Pro
-+ Linux: Ubuntu 
+## Installation:
 
-### Python Dependencies
-`hfqa_tool` mainly depends on the Python scientific computing and file handling stack.
-
-```
-numpy>=1.18.0
-pandas>=1.0.0
-openpyxl>=3.0.0
-math
-datetime
-glob
-os
-warnings
-multiprocessing
-tqdm
-
-# 'glob', 'os', 'warnings', 'datetime', 're' and 'math' are part of the standard library
-```
-
-# Installation Guide:
-
-### Install from Github
-In shell, cmd, VSCode or any other console of your liking enter:
-```
-git clone https://github.com/sfchishti/hfqa_tool.git
-```
-```
-cd hfqa_tool
-```
-```
-python setup.py install --user
-```
-- `sudo`, if required
-- `python3 setup.py build_ext --inplace  # for cython`, if you want to test in-place, first execute this
-
-# Running code
-## Option 1: 
-### Cloning .git with Multiprocessing
-- Follow steps from [Install from Github](#install-from-github).
-- Run `python` in shell
-   ```
-  from hfqa_tool import main
-  main()
-  ```
-- When prompted with `Please enter the file directory:`, provide the directory/location of your Heatflow data files.
-- If running on Linux or Mac OS, use forward slashes /. On Windows, backward slashes \ will work fine when assigning your directory.
-- Get results in the same folder with execution time displayed :)
-
-## Option 2: 
-### Directly without Multiprocessing
-- Download `hfqa_tool` repository
-- Run all sections of the code of notebooks on conda environment. Descriptions and guidelines are provided with the code.
-- When prompted with `Please enter the file directory:`, provide the directory/location of your Heatflow data files. This can be done in the last section (*10. hfqa_tool function*) of the code, both in [Vocabulary_check](https://github.com/sfchishti/hfqa_tool/blob/main/notebooks/Vocabulary_check.ipynb), and [Combined_score](https://github.com/sfchishti/hfqa_tool/blob/main/notebooks/Combined_score.ipynb) code.
-- If running on Linux or Mac OS, use forward slashes /. On Windows, backward slashes \ will work fine when assigning your directory.
-- Get results in the same folder :)
-
-# Setting up the development environment:
 ### Prerequisites
+- Python 3.8 or higher
+- pip, conda package manager
 
-Make sure you have the following installed:
-
-- [Python](https://www.python.org/) 3.x (Ensure you have the correct version)
-- [pip](https://pip.pypa.io/en/stable/) (Python package installer)
-- [virtualenv](https://virtualenv.pypa.io/en/stable/) (Optional but recommended)
-- Git
-
-### Cloning the Repository
-
-Clone the project repository using Git:
-
-```
-git clone https://github.com/sfchishti/hfqa_tool.git
+### Install from Github 
+```bash
+git clone https://github.com/viktoriadergunova/hfqa_tool.git
 cd hfqa_tool
+pip install -r requirements.txt # install dependencies
+```
+### Dependencies
+```
+pandas>=2.0
+pyarrow
+openpyxl
+pyyaml
+```
+### Data Preparation
+
+Your Excel file must follow offical GHFDB structure: #TODO add image
+```
+Row 1-7:   Metadata rows (configurable)
+Row 8:     Column headers (ID, Level, Obligation, P1, P2, P3, ...)
+Row 9+:    Data rows
 ```
 
-### Select branch
+## Quick Start - Vocabulary Validation
+```bash
+python main.py --vocab-check --input your_data.xlsx 
+```
+**Parameters:**
+- `--vocab-check`: Run vocabulary validation mode
+- `--input`: Path to your Excel file
+- `--out-json`: Option to get .json files, saved in /voc
+- `--out-excel`: Option to get .xlsx files (default), saved in /voc folder
+- `--meta-rows`: Number of metadata rows at the top of your Excel sheet (default: 7)
+- `--sheet`: Sheet index to validate (default: 1)
+- 
+**Full example with all options:**
+```bash
+python main.py --input your_data.xlsx --vocab-check --out-json --sheet 1 --meta-rows 7 --debug-prefix debug_run 
+```
+### Understanding the Output 
+#### JSON Report Structure
+```json
+{
+  "violations": [
+    {
+      "row_excel_number": 8,
+      "column": "P2",
+      "site_name": "[Site-001]",
+      "flag": "missing",
+      "comment": "HF Uncertainty"
+    }
+  ],
+  "summary": {
+    "total_rows_in_sheet": 1000,
+    "data_rows_validated": 993,
+    "rows_with_any_error": 45,
+    "functional_error_count": 78,
+    "conditional_error_count": 12,
+    "runtime_seconds": 2.34
+  }
+}
+```
+## Excel Output
 
-```
-git checkout contribute
-```
-You're now on development mode. Make sure to make proper commit message and 
-check your credentials as committer. For example:
-```
-git commit -m "Vocab_check.ipynb:your_commit"
-```
-To configue yourself as committer try:
-```
-git config user.name "Your_name"
-git config user.email "your_email@example.com"
-```
-```
-git push
+The Excel output file contains all original input data and two additional columns that describe validation results and row classification:
+
+- **`row_type`** – indicates whether the row represents metadata or data
+- **`validation_comments`** – contains column dependent error descriptions
+- Rows without validation issues have an empty `validation_comments` field.
+
+**Format**
+| … | P1 | P2 | P3 | row_type | validation_comments |
+|---|----|----|----|----------|---------------------|
+| … | 65.5 |    | Site-001 | data | `[MISSING] C47 (Thermal conductivity number): Required field is empty; [INVALID VALUE] C26 (Stratigraphy): Value 'late paleozoic orogeny' is not in allowed list` |
+| … | 72.3 | 5.2 | Site-002 | data |  |
+
+- **MISSING**: Required field is empty
+- **RANGE**: Value outside valid range
+- **INVALID**: Value not in vocabulary
+- **CONDITIONAL**: Context-dependent rule violated 
+
+## Quality Scoring
+
+The quality scoring module evaluates heat-flow data according to IHFC standards, providing a comprehensive assessment through three independent components:
+
+### Quick Start - Quality Scoring
+```bash
+python main.py --quality-score --input your_data.xlsx 
 ```
 
-    
-# Precaution
-- The worksheet of Heat flow data must be named "data list", to execute conversion of the data set in machine readable format (here, *.csv*). Else the function `convert2UTF8csv(folder_path)` will not work.
-![data_list Image](notebooks/Graphics/data_list.png)
-- When a new data release occurs and the relevancy (indicated by *'Obligation'*) of a column in the HF data structure is updated, make sure to place the data structure files with the updated column relevancy into separate folders before running the code.
+**Parameters:**
+- `--quality-score`: Run quality scoring mode
+- `--input`: Path to your Excel file
+- `--out-json`: Option to get .json files, saved in /voc
+- `--out-excel`: Option to get .xlsx files (default), saved in /qc folder
+- `--meta-rows`: Number of metadata rows (default: 7)
+- `--sheet`: Sheet index to process (default: 0)
+- `--debug-prefix`: Optional prefix for debug output files
 
-# License
-**Copyright © <2025> Chishti, S.F., Balkan-Pazvantoğlu, E., Norden, B.; Neumann, F., Elbarbary, S., Gross, E.S., Petrunin, A.G., Fuchs, S. GFZ Helmholtz Centre for Geosciences**
+**Full example with all options:**
+```bash
+python main.py --input your_data.xlsx --quality-score --out-json --sheet 1 --meta-rows 7 --debug-prefix debug_run 
+```
 
-This work is licensed under multiple licenses:
+### Quality Score Components
 
-- The source codes are licensed under **[MIT](license/MIT.txt)**.
-- The documentation and the images are licensed under **[CC-BY-4.0](license/CC-BY-4.0.txt)**.
+The quality assessment consists of three independent scores that are combined into a final quality code:
+
+#### 1. U-Score (Uncertainty Quantification)
+Evaluates the numerical uncertainty of heat-flow determinations based on the coefficient of variation (COV):
+
+**Calculation**
+```
+COV(%) = (Heat Flow Uncertainty / Heat Flow Mean) × 100
+```
+
+**Format**
+| Score | COV Range | Description |
+|-------|-----------|-------------|
+| U1 | < 5% | Excellent - Very low uncertainty |
+| U2 | 5-15% | Good - Low uncertainty |
+| U3 | 15-25% | Acceptable - Moderate uncertainty |
+| U4 | > 25% | Poor - High uncertainty |
+| Ux | N/A | Not determined / missing data |
+
+
+#### 2. M-Score (Methodological Quality)
+Assesses the quality of measurement methods for both temperature gradient and thermal conductivity determinations. The evaluation differs for borehole/mine data versus probe-sensing data.
+
+**Format**
+| Score | Quality Range | Description |
+|-------|---------------|-------------|
+| M1 | ≥ 0.75 | Excellent methodology |
+| M2 | 0.50-0.74 | Good methodology |
+| M3 | 0.25-0.49 | Acceptable methodology |
+| M4 | < 0.25 | Poor methodology |
+| M*x | Any | Incomplete metadata (x-suffix indicates missing data) |
+
+
+#### 3. P-Flags (Perturbation Effects)
+A 7-character code indicating the status of environmental perturbations that may affect heat-flow measurements:
+
+**Format:** `SxxxCxh` (example)
+
+Each position represents a specific perturbation:
+1. **S/s** - Sedimentation effects
+2. **E/e** - Erosion effects
+3. **T/t** - Topography/Bathymetry effects
+4. **P/p** - Paleoclimate effects
+5. **V/v** - Surface/Bottom water temperature variation
+6. **C/c** - Convection/Fluid flow
+7. **R/r** - Heat refraction effects
+
+**Character meanings:**
+- **Uppercase letter** (e.g., `S`, `E`) = Present and **corrected**
+- **Lowercase letter** (e.g., `s`, `e`) = Present but **not corrected**
+- **Uppercase `X`** = Present but **not significant**
+- **Lowercase `x`** = **Not recognized** or not present
+- **Dash `-`** = Unspecified/missing data
+
+**Format:**
+- `SxxxCxh` = Sedimentation corrected, convection not recognized, heat refraction present but not corrected
+- `SETPV--` = Multiple effects corrected, convection and heat refraction unspecified
+- `-------` = All perturbations unspecified
+
+### Combined Quality Score
+
+The final quality score combines all three components:
+
+**Format::**
+- `U1M1.SxxxCxh` - Excellent uncertainty, excellent methodology, specific perturbations
+- `U2M3x.-------` - Good uncertainty, acceptable methodology with missing metadata, unspecified perturbations
+- `U3M2.SETPVXR` - Acceptable uncertainty, good methodology, multiple perturbations addressed
+
+If the input data contains `ID` and `ID_parent` columns, an additional `quality_score_inherited` column is added to the output, representing the worst quality score inherited from all relevant child entries (`C9 = [Yes]`) to the parent level, following the inheritance scheme described in Fuchs et al. (2023).
+
+**Example:**
+
+| ID_parent | ID | C9 | quality_score | quality_score_inherited |
+|-----------|----|----|---------------|------------------------|
+| 1 | 1 | `[Yes]` | `U1M2.xeTxxxx` | `U3M2.xeTxxxx` |
+| 1 | 2 | `[Yes]` | `U3M1.xeTxxxx` | `U3M2.xeTxxxx` |
+| 1 | 3 | `[Yes]` | `U2M2.xeTxxCx` | `U3M2.xeTxxxx` |
+| 1 | 4 | `[No]`  | `U4M4.xeTxVCx` | `U3M2.xeTxxxx` |
+
+The inherited score `U3M2.xeTxxxx` is derived as follows: worst U (`U3`) and worst M (`M2`) are taken independently across all relevant children (`C9 = [Yes]`); P-flags are taken from the child with the worst U score (`U3M1.xeTxxxx`), using M as tiebreaker. Child 4 is excluded as it is not marked as relevant (`C9 = [No]`).
+
+### Output Files
+
+#### JSON Quality Report
+```json
+{
+  "summary": {
+    "total_rows_processed": 150,
+    "quality_distribution": {
+      "U1": 45,
+      "U2": 67,
+      "U3": 28,
+      "U4": 10,
+      "M1": 34,
+      "M2": 56,
+      "M3": 42,
+      "M4": 18
+    },
+    "runtime_seconds": 3.42
+  },
+  "data": [
+    {
+      "row": 9,
+      "site_name": "Site-001",
+      "quality_U": "U1",
+      "quality_M": "M2",
+      "quality_P": "SxxxCxh",
+      "quality_combined": "U1M2.SxxxCxh"
+    }
+  ]
+}
+```
+
+#### Excel Output
+The Excel output includes all original data plus an additional column:
+- **`quality_score`** - Combined quality code (e.g., `U1M2.SxxxCxh`)
+
+## Contributing
+
+We welcome contributions! Please see [ISSUEs.md](ISSUEs.md) 
+
+## Citation 
+
+If you use this tool in your research, please cite:
+
+```bibtex
+@article{fuchs2023quality,
+  title = {Quality-assurance of heat-flow data: The new structure and evaluation 
+           scheme of the IHFC Global Heat Flow Database},
+  author = {Fuchs, Sven and others},
+  journal = {Tectonophysics},
+  volume = {863},
+  pages = {229976},
+  year = {2023},
+  doi = {10.1016/j.tecto.2023.229976}
+}
+```
+
+## Authors
+
+- Viktoria Dergunova (GFZ)
+- Elif  Balkan-Pazvantoğlu (GFZ)
+- Ben Norden (GFZ)
+- Florian Neumann (MARUM, University of Bremen)
+- Samah Elbarbary (GFZ)
+- Alexey G. Petrunin (GFZ)
+- Sven Fuchs (GFZ)
+
+See [AUTHORs.md](AUTHORs.md) for detailed affiliations and contributions.
+
+## License
+
+This project is dual-licensed:
+
+- **Source code**: [MIT License](license/MIT.txt)
+- **Documentation and images**: [CC-BY-4.0](license/CC-BY-4.0.txt)
+
+---
+
+**Maintained by the Section Geoenergy, GFZ Helmholtz Centre for Geosciences**
+
+
+
+
+
+
+
+
+
+
+
+

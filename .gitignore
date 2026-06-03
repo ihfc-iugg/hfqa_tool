@@ -1,0 +1,17 @@
+# Ignore Python cache directories
+__pycache__/
+
+# Ignore compiled Python files
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore local environment files 
+.venv/
+env/
+
+# Validation Output & Intermediate Data
+*.parquet
+*.json
+~$*.xlsx
+.xlsx*.xlsx 

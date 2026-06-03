@@ -1,0 +1,7 @@
+pandas>=2.0
+pyarrow
+openpyxl
+pyyaml
+pytest
+pytest-cov
+#pytest --html=report.html

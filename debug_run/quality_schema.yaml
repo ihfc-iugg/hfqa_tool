@@ -1,0 +1,427 @@
+version: '1.0'
+schema_id: hf_quality:v1
+u_score:
+  calculation:
+    value_col: C1
+    uncertainty_col: C2
+    site_name_col: P3
+    relevance_col: C9
+    role_child: '[yes]'
+    role_parent: '[no]'
+  thresholds:
+    U1: 5.0
+    U2: 15.0
+    U3: 25.0
+    U4: 100.0
+    Ux: missing
+m_score:
+  base_value: 1.0
+  calculation:
+    site_name_col: P3
+    m_route_col: A7
+    t_method_top_col: C31
+    t_method_bottom_col: C32
+    t_number_col: C37
+    q_top_col: C4
+    q_bottom_col: C5
+    tc_location_col: C42
+    tc_source_col: C41
+    tc_number_col: C47
+    tc_saturation_col: C44
+    tc_pT_conditions_col: C45
+    probe_penetration_col: C6
+    probe_tilt_col: C23
+    elevation_col: P6
+    corr_IS_flag_col: C12
+    corr_BWT_flag_col: C17
+    tc_method_col: C43
+  thresholds:
+    M1: 0.75
+    M2: 0.5
+    M3: 0.25
+    M4: 0.0
+    missing_suffix: x
+  borehole_logic:
+    temperature:
+      start_value: 1.0
+      cases:
+        continuous_log:
+          when:
+            C37_T_number:
+              op: '>'
+              value: 3
+          rules:
+            equilibrium_or_corrected:
+              methods_any_of:
+              - '[logeq]'
+              - '[clog]'
+              - '[dtseq]'
+              - '[cdts]'
+              penalty: 0.1
+            perturbed:
+              methods_any_of:
+              - '[logpert]'
+              penalty: -0.1
+        multiple_single_T_points:
+          when: {}
+          rules:
+            equilibrium_or_corrected:
+              methods_any_of:
+              - '[logeq]'
+              - '[clog]'
+              - '[dtseq]'
+              - '[cdts]'
+              - '[bht]'
+              - '[dst]'
+              - '[rtdeq]'
+              - '[rtdc]'
+              - '[odtt-pc]'
+              - '[odtt-tp]'
+              penalty: -0.1
+            perturbed:
+              methods_any_of:
+              - '[logpert]'
+              - '[dtspert]'
+              - '[bht]'
+              - '[dst]'
+              - '[rtdpert]'
+              - '[blk]'
+              penalty: -0.3
+            estimated:
+              methods_any_of:
+              - '[cpd]'
+              - '[xen]'
+              - '[gtm]'
+              - '[bsr]'
+              penalty: -0.5
+        one_single_point_plus_surface_T:
+          when:
+            C31_T_method_top:
+              op: ==
+              value: '[sur]'
+          rules:
+            equilibrium_or_corrected:
+              C32_methods_any_of:
+              - '[cbht]'
+              - '[cdst]'
+              - '[rtdeq]'
+              - '[rtdc]'
+              - '[odtt-pc]'
+              - '[odtt-tp]'
+              penalty: -0.3
+            perturbed:
+              C32_methods_any_of:
+              - '[bht]'
+              - '[dst]'
+              - '[rtdpert]'
+              penalty: -0.5
+            estimated:
+              C32_methods_any_of:
+              - '[cpd]'
+              - '[xen]'
+              - '[gtm]'
+              - '[bsr]'
+              penalty: -0.6
+      missing_metadata:
+        required_C_fields:
+        - C31
+        - C32
+        - C37
+        rule: apply_max_penalty_for_unresolvable_case_and_flag_x
+    conductivity:
+      start_value: 1.0
+      gate_interval_depth_reported:
+        required_C_fields:
+        - C4
+        - C5
+        if_missing:
+          tc_score_fixed: 0.1
+          stop_scoring: true
+      blocks:
+        location:
+          C_field: C42
+          mapping:
+            '[actual-heat-flow-location]': 0.0
+            '[other-location]': -0.1
+            '[literature-unspecified]': -0.2
+        source_type:
+          C_field: C41
+          mapping:
+            '[in-situ-probe]': 0.1
+            '[core-log-integration]': 0.1
+            '[core-samples]': 0.0
+            '[cutting-samples]': -0.1
+            '[outcrop-samples]': -0.1
+            '[well-log-interpretation]': -0.1
+            '[mineral-computation]': -0.2
+            '[assumed-from-literature]': -0.2
+        number_of_conductivities:
+          C_field: C47
+          apply_only_if:
+            C42_tc_location:
+              op: '!='
+              value: '[literature-unspecified]'
+          mapping:
+            '>15': 0.0
+            1-15: -0.1
+            unspecified_or_missing: -0.1
+        saturation:
+          C_field: C44
+          mapping:
+            '[saturated-measured]': 0.0
+            '[saturated-measured-in-situ]': 0.0
+            '[saturated-calculated]': -0.1
+            '[recovered]': -0.1
+            '[dry-measured]': -0.2
+        pT_conditions:
+          C_field: C45
+          mapping:
+            '[actual-in-situ-(pt)-conditions]': 0.0
+            '[replicated-in-situ-(pt)]': 0.0
+            '[corrected-in-situ-(pt)]': 0.0
+            '[replicated-in-situ-(p)]': -0.1
+            '[corrected-in-situ-(p)]': -0.1
+            '[replicated-in-situ-(t)]': -0.1
+            '[corrected-in-situ-(t)]': -0.1
+            '[recorded-ambient-pt-conditions]': -0.2
+            '[unrecorded-ambient-pt-conditions]': -0.2
+            '[unspecified]': -0.2
+      missing_metadata:
+        required_C_fields_after_gate:
+        - C42
+        - C41
+        - C47
+        - C44
+        - C45
+        rule: apply_max_penalty_per_missing_block_and_flag_x
+  marine_logic:
+    temperature:
+      start_value: 1.0
+      blocks:
+        penetration_depth:
+          C_field: C6
+          bins:
+            gt_10m:
+              when:
+                op: '>'
+                value: 10.0
+              penalty: 0.1
+            _3_to_10m:
+              when:
+                op: '>='
+                value: 3.0
+              penalty: 0.0
+            _1_to_3m:
+              when:
+                op: '>='
+                value: 1.0
+              penalty: -0.1
+            lt_1m_or_unspecified:
+              when:
+                op: <
+                value: 1.0
+              penalty: -0.2
+        number_of_temperature_points:
+          C_field: C37
+          bins:
+            gt_5:
+              when:
+                op: '>'
+                value: 5.0
+              penalty: 0.1
+            _3_to_5:
+              when:
+                op: '>='
+                value: 3.0
+              penalty: 0.0
+            _2:
+              when:
+                op: ==
+                value: 2.0
+              penalty: -0.1
+            _0_to_1_or_unspecified:
+              when:
+                op: <
+                value: 2.0
+              penalty: -0.2
+        water_depth:
+          C_field: P6
+          corrected_if:
+            flag_col: C17
+            flag_value: '[present-and-corrected]'
+            penalty_if_corrected: 0.0
+          bins:
+            gt_2500:
+              when:
+                op: '>'
+                value: 2500.0
+              penalty: 0.0
+            _1500_to_2500:
+              when:
+                op: '>='
+                value: 1500.0
+              penalty: -0.1
+            lt_1500_or_unspecified:
+              when:
+                op: <
+                value: 1500.0
+              penalty: -0.2
+        probe_tilt:
+          C_field: C23
+          corrected_if:
+            flag_col: C12
+            flag_value: '[tilt-corrected]'
+            penalty_if_corrected: 0.0
+          bins:
+            _0_to_10_or_corrected:
+              when:
+                op: '>='
+                value: 0.0
+              penalty: 0.0
+            _10_to_30:
+              when:
+                op: '>='
+                value: 10.0
+              penalty: -0.1
+            gt_30_or_unspecified:
+              when:
+                op: '>'
+                value: 30.0
+              penalty: -0.2
+      missing_metadata:
+        required_C_fields:
+        - C6
+        - C37
+        - P6
+        - C23
+        rule: apply_max_penalty_per_missing_block_and_flag_x
+    conductivity:
+      start_value: 1.0
+      blocks:
+        location:
+          C_field: C42
+          mapping:
+            '[actual-heat-flow-location]': 0.0
+            '[other-location]': -0.1
+            '[literature-unspecified]': -0.2
+        source_type:
+          C_field: C41
+          mapping:
+            '[in-situ-probe]': 0.0
+            '[core-samples]': 0.0
+            '[core-log-integration]': 0.0
+            '[cutting-samples]': -0.1
+            '[outcrop-samples]': -0.1
+            '[well-log-interpretation]': -0.1
+            '[mineral-computation]': -0.2
+            '[assumed-from-literature]': -0.2
+        saturation:
+          C_field: C44
+          mapping:
+            '[recovered]': 0.0
+            '[saturated-measured]': 0.0
+            '[saturated-calculated]': -0.1
+            '[dry-measured]': -0.2
+            '[saturated-measured-in-situ]': 0.0
+        tc_method:
+          C_field: C43
+          mapping:
+            '[probe-pulse-technique]': 0.0
+            '[estimation-from-lithology-and-literature]': -0.1
+            '[estimation-from-water-content-porosity]': -0.2
+            '[estimation-from-mineral-composition]': -0.2
+        number_of_conductivities:
+          C_field: C47
+          apply_only_if:
+            C42_tc_location:
+              op: '!='
+              value: '[literature-unspecified]'
+          bins:
+            gt_3:
+              when:
+                op: '>'
+                value: 3.0
+              penalty: 0.0
+            _2_to_3:
+              when:
+                op: '>='
+                value: 2.0
+              penalty: -0.1
+            _0_to_1_or_unspecified:
+              when:
+                op: <
+                value: 2.0
+              penalty: -0.2
+        pT_conditions:
+          C_field: C45
+          mapping:
+            '[actual-in-situ-(pt)-conditions]': 0.0
+            '[replicated-in-situ-(pt)]': 0.0
+            '[corrected-in-situ-(pt)]': 0.0
+            '[replicated-in-situ-(p)]': -0.1
+            '[corrected-in-situ-(p)]': -0.1
+            '[replicated-in-situ-(t)]': -0.1
+            '[corrected-in-situ-(t)]': -0.1
+            '[recorded-ambient-pt-conditions]': -0.2
+            '[unrecorded-ambient-pt-conditions]': -0.2
+            '[unspecified]': -0.2
+      conditional_rules:
+      - when_all:
+          C43_tc_method:
+            op: ==
+            value: '[probe-pulse-technique]'
+          C41_tc_source:
+            op: ==
+            value: '[in-situ-probe]'
+          C44_tc_saturation:
+            op: ==
+            value: '[saturated-measured-in-situ]'
+        bonus: 0.1
+      - when_all:
+          C43_tc_method:
+            op: ==
+            value: '[probe-pulse-technique]'
+          C45_tc_pT_conditions:
+            op: ==
+            value: '[actual-in-situ-(pt)-conditions]'
+        bonus: 0.1
+      missing_metadata:
+        required_C_fields:
+        - C42
+        - C41
+        - C43
+        - C44
+        - C45
+        - C47
+        rule: apply_max_penalty_per_missing_block_and_flag_x
+  p_flags:
+    order:
+    - sedimentation
+    - erosion
+    - topography_bathymetry
+    - paleoclimate
+    - surface_bottom_water_variation
+    - convection
+    - heat_refraction
+    fields:
+      sedimentation: C13
+      erosion: C14
+      topography_bathymetry: C15
+      paleoclimate: C16
+      surface_bottom_water_variation: C17
+      convection: C18
+      heat_refraction: C19
+    letters:
+      sedimentation: S
+      erosion: E
+      topography_bathymetry: T
+      paleoclimate: P
+      surface_bottom_water_variation: V
+      convection: C
+      heat_refraction: R
+    encoding:
+      '[present-and-corrected]': UPPER
+      '[present-and-not-corrected]': LOWER
+      '[present-not-significant]': X
+      '[not-recognized]': x
+      '[unspecified]': '-'
